@@ -1,0 +1,34 @@
+# HLA typing
+
+## Copy software
+
+ln /frazer01/software/hla_vbseq_v2/HLAVBSeq.jar /frazer01/home/matteo/software/my_hla_typing/.
+
+## Copy reference files
+
+mkdir /frazer01/home/matteo/software/my_hla_typing/reference
+mkdir /frazer01/home/matteo/software/my_hla_typing/reference/gen
+mkdir /frazer01/home/matteo/software/my_hla_typing/reference/nuc
+
+ln /frazer01/projects/CEGS/analysis/hla_vbseq_pipeline/input/alleles/alleles_to_test.txt /frazer01/home/matteo/software/my_hla_typing/reference/alleles.txt
+ln /frazer01/reference/public/imgt_hla_v3.46.0/hla_gen.fasta                             /frazer01/home/matteo/software/my_hla_typing/reference/gen/alleles.gen.fasta
+ln /frazer01/reference/public/imgt_hla_v3.46.0/hla_nuc.fasta                             /frazer01/home/matteo/software/my_hla_typing/reference/nuc/alleles.nuc.fasta
+
+ln /frazer01/projects/CEGS/analysis/hla_vbseq_pipeline/input/alleles/alleles.gen.fasta.* /frazer01/home/matteo/software/my_hla_typing/reference/gen/.
+ln /frazer01/projects/CEGS/analysis/hla_vbseq_pipeline/input/alleles/alleles.nuc.fasta.* /frazer01/home/matteo/software/my_hla_typing/reference/nuc/.
+
+ln /frazer01/projects/CEGS/analysis/hla_vbseq_pipeline/input/alleles/alleles.gen* /frazer01/home/matteo/software/my_hla_typing/reference/gen/.
+
+mkdir /frazer01/home/matteo/software/my_hla_typing/reference/nuc_red
+ln /frazer01/projects/CEGS/analysis/hla_vbseq_pipeline/pipeline/select_genomic_regions/nuc_red/* /frazer01/home/matteo/software/my_hla_typing/reference/nuc_red/.
+
+ln /frazer01/projects/CEGS/analysis/hla_vbseq_pipeline/pipeline/select_genomic_regions/hg19/regions.bed /frazer01/home/matteo/software/my_hla_typing/reference/hg19.bed
+ln /frazer01/projects/CEGS/analysis/hla_vbseq_pipeline/pipeline/select_genomic_regions/hg38/regions.bed /frazer01/home/matteo/software/my_hla_typing/reference/hg38.bed
+
+# Run example (one single file)
+
+cd /frazer01/home/matteo/software/my_hla_typing
+
+nohup bash hla_typing.sh /frazer01/projects/CEGS/analysis/hla_vbseq_pipeline/input/vte_exome/111102_SN853_0077_AD0DVYACXX/VTE.070.LX_CGATGT_sort_mapped_realign_mdup_recal.bam hg19 /frazer01/projects/CEGS/analysis/hla_vbseq_pipeline/pipeline/hla_vbseq/out/VTE.070.nuc_red nuc_red reference/nuc_red/alleles.nuc_red.txt 50 100 &
+nohup bash hla_typing.sh /frazer01/projects/CEGS/analysis/hla_vbseq_pipeline/input/vte_exome/111102_SN853_0077_AD0DVYACXX/VTE.088.LX_GCCAAT_sort_mapped_realign_mdup_recal.bam hg19 /frazer01/projects/CEGS/analysis/hla_vbseq_pipeline/pipeline/hla_vbseq/out/VTE.088.nuc_red nuc_red reference/nuc_red/alleles.nuc_red.txt 50 100 &
+nohup bash hla_typing.sh /frazer01/projects/CEGS/analysis/hla_vbseq_pipeline/input/vte_exome/111102_SN853_0077_AD0DVYACXX/VTE.089.LX_CTTGTA_sort_mapped_realign_mdup_recal.bam hg19 /frazer01/projects/CEGS/analysis/hla_vbseq_pipeline/pipeline/hla_vbseq/out/VTE.089.nuc_red nuc_red reference/nuc_red/alleles.nuc_red.txt 50 100 &

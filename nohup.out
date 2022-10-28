@@ -1,0 +1,118 @@
+mkdir: cannot create directory ‘./TMP’: File exists
+Wed Jul 13 16:10:47 PDT 2022
+samtools view -bo ./TMP/mapped.bam -L /frazer01/home/aphodges/software/my_hla_typing/reference/hg38.bed /frazer01/home/aphodges/software/my_hla_typing/TMP/VTE.070.LX_CGATGT_sort_mapped_realign_mdup_recal.bam
+[E::hts_open_format] Failed to open file /frazer01/home/aphodges/software/my_hla_typing/TMP/VTE.070.LX_CGATGT_sort_mapped_realign_mdup_recal.bam
+samtools view: failed to open "/frazer01/home/aphodges/software/my_hla_typing/TMP/VTE.070.LX_CGATGT_sort_mapped_realign_mdup_recal.bam" for reading: No such file or directory
+Wed Jul 13 16:10:47 PDT 2022
+samtools sort -n -o ./TMP/sort.bam ./TMP/mapped.bam
+[E::hts_open_format] Failed to open file ./TMP/mapped.bam
+samtools sort: can't open "./TMP/mapped.bam": No such file or directory
+Wed Jul 13 16:10:47 PDT 2022
+samtools fixmate -O bam ./TMP/sort.bam ./TMP/fixmate.bam
+[E::hts_open_format] Failed to open file ./TMP/sort.bam
+samtools fixmate: cannot open input file: No such file or directory
+Wed Jul 13 16:10:47 PDT 2022
+samtools fastq -n -0 ./TMP/mapped.0.fastq -s ./TMP/mapped.s.fastq -1 ./TMP/mapped.1.fastq -2 ./TMP/mapped.2.fastq ./TMP/fixmate.bam
+[E::hts_open_format] Failed to open file ./TMP/fixmate.bam
+samtools bam2fq: Cannot read file "./TMP/fixmate.bam": No such file or directory
+Wed Jul 13 16:10:47 PDT 2022
+samtools view -bh -f 12 -o ./TMP/unmapped.bam /frazer01/home/aphodges/software/my_hla_typing/TMP/VTE.070.LX_CGATGT_sort_mapped_realign_mdup_recal.bam
+[E::hts_open_format] Failed to open file /frazer01/home/aphodges/software/my_hla_typing/TMP/VTE.070.LX_CGATGT_sort_mapped_realign_mdup_recal.bam
+samtools view: failed to open "/frazer01/home/aphodges/software/my_hla_typing/TMP/VTE.070.LX_CGATGT_sort_mapped_realign_mdup_recal.bam" for reading: No such file or directory
+Wed Jul 13 16:10:47 PDT 2022
+samtools fastq -n -0 ./TMP/unmapped.0.fastq -s ./TMP/unmapped.s.fastq -1 ./TMP/unmapped.1.fastq -2 ./TMP/unmapped.2.fastq ./TMP/unmapped.bam
+[E::hts_open_format] Failed to open file ./TMP/unmapped.bam
+samtools bam2fq: Cannot read file "./TMP/unmapped.bam": No such file or directory
+Wed Jul 13 16:10:47 PDT 2022
+cat ./TMP/mapped.1.fastq ./TMP/unmapped.1.fastq > ./TMP/totest.1.fastq
+cat: ./TMP/mapped.1.fastq: No such file or directory
+cat: ./TMP/unmapped.1.fastq: No such file or directory
+Wed Jul 13 16:10:47 PDT 2022
+cat ./TMP/mapped.2.fastq ./TMP/unmapped.2.fastq > ./TMP/totest.2.fastq
+cat: ./TMP/mapped.2.fastq: No such file or directory
+cat: ./TMP/unmapped.2.fastq: No such file or directory
+Wed Jul 13 16:10:47 PDT 2022
+bwa mem -t 2 -P -L 10000 -a /frazer01/home/aphodges/software/my_hla_typing/reference/nuc_red/alleles.nuc_red.fasta ./TMP/totest.1.fastq ./TMP/totest.2.fastq > ./TMP/totest.sam
+hla_typing.sh: line 70: bwa: command not found
+Wed Jul 13 16:10:47 PDT 2022
+java -Xmx7G -jar /frazer01/home/aphodges/software/my_hla_typing/HLAVBSeq.jar /frazer01/home/aphodges/software/my_hla_typing/reference/nuc_red/alleles.nuc_red.fasta ./TMP/totest.sam ./TMP/result.txt --alpha_zero 0.01 --is_paired
+sam/bam file found.
+fasta file:/frazer01/home/aphodges/software/my_hla_typing/reference/nuc_red/alleles.nuc_red.fasta
+sam file:./TMP/totest.sam
+output path:./TMP/result.txt
+paired-end reads: true
+alpha_zero: 0.01
+Parsed references.
+total read pairs: 1
+total concordant alignments: 0
+VBMethod started.
+alpha_zero: 0.01
+Analyzing SAM/BAM file..
+Calculating matching probability..
+step:1
+log marginal likelihood:  -1426.46	predicted num:0	remaining num:0	diff:0.0
+converged.
+Output done.
+All done.
+Wed Jul 13 16:10:48 PDT 2022
+Rscript /frazer01/home/aphodges/software/my_hla_typing/process_hla_types.R ./TMP/result.txt reference/nuc_red/alleles.nuc_red.txt 50 100
+Wed Jul 13 16:10:49 PDT 2022
+mkdir: cannot create directory ‘./TMP’: File exists
+Wed Jul 13 16:13:37 PDT 2022
+samtools view -bo ./TMP/mapped.bam -L /frazer01/home/aphodges/software/my_hla_typing/reference/hg38.bed /frazer01/home/aphodges/software/my_hla_typing/TMP/VTE.070.LX_CGATGT_sort_mapped_realign_mdup_recal.bam
+[E::hts_open_format] Failed to open file /frazer01/home/aphodges/software/my_hla_typing/TMP/VTE.070.LX_CGATGT_sort_mapped_realign_mdup_recal.bam
+samtools view: failed to open "/frazer01/home/aphodges/software/my_hla_typing/TMP/VTE.070.LX_CGATGT_sort_mapped_realign_mdup_recal.bam" for reading: No such file or directory
+Wed Jul 13 16:13:37 PDT 2022
+samtools sort -n -o ./TMP/sort.bam ./TMP/mapped.bam
+[E::hts_open_format] Failed to open file ./TMP/mapped.bam
+samtools sort: can't open "./TMP/mapped.bam": No such file or directory
+Wed Jul 13 16:13:37 PDT 2022
+samtools fixmate -O bam ./TMP/sort.bam ./TMP/fixmate.bam
+[E::hts_open_format] Failed to open file ./TMP/sort.bam
+samtools fixmate: cannot open input file: No such file or directory
+Wed Jul 13 16:13:37 PDT 2022
+samtools fastq -n -0 ./TMP/mapped.0.fastq -s ./TMP/mapped.s.fastq -1 ./TMP/mapped.1.fastq -2 ./TMP/mapped.2.fastq ./TMP/fixmate.bam
+[E::hts_open_format] Failed to open file ./TMP/fixmate.bam
+samtools bam2fq: Cannot read file "./TMP/fixmate.bam": No such file or directory
+Wed Jul 13 16:13:37 PDT 2022
+samtools view -bh -f 12 -o ./TMP/unmapped.bam /frazer01/home/aphodges/software/my_hla_typing/TMP/VTE.070.LX_CGATGT_sort_mapped_realign_mdup_recal.bam
+[E::hts_open_format] Failed to open file /frazer01/home/aphodges/software/my_hla_typing/TMP/VTE.070.LX_CGATGT_sort_mapped_realign_mdup_recal.bam
+samtools view: failed to open "/frazer01/home/aphodges/software/my_hla_typing/TMP/VTE.070.LX_CGATGT_sort_mapped_realign_mdup_recal.bam" for reading: No such file or directory
+Wed Jul 13 16:13:37 PDT 2022
+samtools fastq -n -0 ./TMP/unmapped.0.fastq -s ./TMP/unmapped.s.fastq -1 ./TMP/unmapped.1.fastq -2 ./TMP/unmapped.2.fastq ./TMP/unmapped.bam
+[E::hts_open_format] Failed to open file ./TMP/unmapped.bam
+samtools bam2fq: Cannot read file "./TMP/unmapped.bam": No such file or directory
+Wed Jul 13 16:13:37 PDT 2022
+cat ./TMP/mapped.1.fastq ./TMP/unmapped.1.fastq > ./TMP/totest.1.fastq
+cat: ./TMP/mapped.1.fastq: No such file or directory
+cat: ./TMP/unmapped.1.fastq: No such file or directory
+Wed Jul 13 16:13:37 PDT 2022
+cat ./TMP/mapped.2.fastq ./TMP/unmapped.2.fastq > ./TMP/totest.2.fastq
+cat: ./TMP/mapped.2.fastq: No such file or directory
+cat: ./TMP/unmapped.2.fastq: No such file or directory
+Wed Jul 13 16:13:38 PDT 2022
+bwa mem -t 2 -P -L 10000 -a /frazer01/home/aphodges/software/my_hla_typing/reference/nuc_red/alleles.nuc_red.fasta ./TMP/totest.1.fastq ./TMP/totest.2.fastq > ./TMP/totest.sam
+hla_typing.sh: line 70: bwa: command not found
+Wed Jul 13 16:13:38 PDT 2022
+java -Xmx7G -jar /frazer01/home/aphodges/software/my_hla_typing/HLAVBSeq.jar /frazer01/home/aphodges/software/my_hla_typing/reference/nuc_red/alleles.nuc_red.fasta ./TMP/totest.sam ./TMP/result.txt --alpha_zero 0.01 --is_paired
+sam/bam file found.
+fasta file:/frazer01/home/aphodges/software/my_hla_typing/reference/nuc_red/alleles.nuc_red.fasta
+sam file:./TMP/totest.sam
+output path:./TMP/result.txt
+paired-end reads: true
+alpha_zero: 0.01
+Parsed references.
+total read pairs: 1
+total concordant alignments: 0
+VBMethod started.
+alpha_zero: 0.01
+Analyzing SAM/BAM file..
+Calculating matching probability..
+step:1
+log marginal likelihood:  -1426.46	predicted num:0	remaining num:0	diff:0.0
+converged.
+Output done.
+All done.
+Wed Jul 13 16:13:38 PDT 2022
+Rscript /frazer01/home/aphodges/software/my_hla_typing/process_hla_types.R ./TMP/result.txt reference/nuc_red/alleles.nuc_red.txt 50 100
+Wed Jul 13 16:13:39 PDT 2022
