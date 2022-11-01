@@ -129,4 +129,6 @@ dmypy.json
 .pyre/
 
 #ignore local HLAVBSeq.jar file for fair usage.
-HLAVBSeq.jar
+examples/code/
+
+

@@ -16,6 +16,8 @@ dir="${prefix}.TMP"
 fasta="/frazer01/home/aphodges/software/my_hla_typing/reference/${fasta_type}/alleles.${fasta_type}.fasta"
 bed="/frazer01/home/aphodges/software/my_hla_typing/reference/${build}.bed"
 ref_fasta="/frazer01/home/aphodges/software/my_hla_typing/reference/hg38_v2/hg38.fa"
+hla_vbseq="/frazer01/home/aphodges/software/my_hla_typing/HLAVBSeq.jar"
+process_hlas="/frazer01/home/aphodges/software/my_hla_typing/process_hla_types.R"
 
 #if [ ! -d "${dir}" ]; then
 # echo $dir
@@ -73,13 +75,13 @@ date >& 2
 
 # run HLA-VBSeq
 
-cmd="java -Xmx12G -jar /frazer01/home/aphodges/software/my_hla_typing/HLAVBSeq.jar ${fasta} ${dir}/totest.sam ${dir}/result.txt --alpha_zero 0.01 --is_paired"
+cmd="java -Xmx12G -jar ${hlavbseq} ${fasta} ${dir}/totest.sam ${dir}/result.txt --alpha_zero 0.01 --is_paired"
 echo "${cmd}" >& 2; eval $cmd
 date >& 2
     
 # get HLA types
 
-cmd="Rscript /frazer01/home/aphodges/software/my_hla_typing/process_hla_types.R ${dir}/result.txt ${allele} ${mean_cov} ${read_len}"
+cmd="Rscript ${process_hlas} ${dir}/result.txt ${allele} ${mean_cov} ${read_len}"
 echo "${cmd}" >& 2; eval $cmd
 date >& 2
     
