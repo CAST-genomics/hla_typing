@@ -131,6 +131,7 @@ dmypy.json
 #ignore local HLAVBSeq.jar file for fair usage.
 examples/code/
 examples/results/
+*.ipynb
 
 
 
