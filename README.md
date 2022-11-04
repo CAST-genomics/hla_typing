@@ -8,7 +8,8 @@ Previously, code was designed with X == 1000genomes (1KGP) and related datasets 
 
 ### Setup:
 0) Install/link appropriate code dependencies
-- Added initialize_R.R code to assist in R dependency generation.  Depending on install strategies (e.g. with/without conda) and environment needs, this may need additional updates/tinkering for full functionality.  Download http://nagasakilab.csml.org/hla/HLAVBSeq.jar and set in your bashrc settings/local path.
+- Added initialize_R.R code to assist in R dependency generation.  Depending on install strategies (e.g. with/without conda) and environment needs, this may need additional updates/tinkering for full functionality.  Download http://nagasakilab.csml.org/hla/HLAVBSeq.jar and set in your bashrc settings/local path. 
+(Note for AllOfUs this will be a direct !wget call.)
 
 1) downloading and storing reference files of interest
 - Generic reference and index data files should be downloaded/generated.  
@@ -28,49 +29,3 @@ Previously, code was designed with X == 1000genomes (1KGP) and related datasets 
 
 ---------------------------------------------------------------------
 
-
-
-
-
-## OLDER:
-### HLA typing of the 1000 Genomes individuals
-### High-coverage WGS (3,202 samples)
-### Download genotype data from the high-coverage WGS:
-### Set up cache for read CRAMs faster 
-- Run the seq_cache_populate.pl script from samtools - http://www.htslib.org/workflow/#mapping_to_cram  
-perl samtools/misc/seq_cache_populate.pl -root /path/to/cache /path/to/GRCh38_full_analysis_set_plus_decoy_hla.fa
-- Set the cache environment variables 
-export REF_PATH=/path/to/cache/%2s/%2s/%s:http://www.ebi.ac.uk/ena/cram/md5/%s
->export REF_CACHE=/path/to/cache/%2s/%2s/%s
-```
-bash script/setup_cram_cache.sh
-```
-### Get 1KGP sample information
-### Set up HLA typing on the 1KGP
-- prepare_hla_typing.ipynb
-
-### Link SNP VCF
-### Convert HLA types to VCF, combine into one VCF and phase
-- convert_hla_types_to_vcf.ipynb (also imputes in 1kgp for validation)
-
-### Test imputation in 1KGP
-- validate_imputation_1kgp.ipynb
-
-### Impute HLA types in UKBB
-- impute_hla_types.ipynb
-
-### Run GWAS on UKBB HLA types
-- go back to /frazer01/projects/CEGS/analysis/ukbb_hla_type_gwas/
-
-### Infer local ancestry
-### Kohonen SOM
-- local_ancestry_som.ipynb
-
-### OLD
-### Impute HLA types
-- 10-step cross-validation
-- linear regression
-- impute_hla_cv.ipynb
-
-### phase with imputed data
-- phase_hla.ipynb
