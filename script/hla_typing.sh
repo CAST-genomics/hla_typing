@@ -11,20 +11,19 @@ allele=$5
 mean_cov=$6
 read_len=$7
 
-#dir=`mktemp -d -p pipeline/hla_vbseq/TMP`
-dir="${prefix}.TMP"            
-fasta="/frazer01/home/aphodges/software/my_hla_typing/reference/${fasta_type}/alleles.${fasta_type}.fasta"
-bed="/frazer01/home/aphodges/software/my_hla_typing/reference/${build}.bed"
-ref_fasta="/frazer01/home/aphodges/software/my_hla_typing/reference/hg38_v2/hg38.fa"
-hla_vbseq="/frazer01/home/aphodges/software/my_hla_typing/HLAVBSeq.jar"
-process_hlas="/frazer01/home/aphodges/software/my_hla_typing/process_hla_types.R"
 
-#if [ ! -d "${dir}" ]; then
-# echo $dir
-#fi
+#dir=`mktemp -d -p pipeline/hla_vbseq/TMP`
+dir="${prefix}.TMP"
+path="~/software/my_hla_typing"            
+fasta="${path}/reference/${fasta_type}/alleles.${fasta_type}.fasta"
+bed="${path}/reference/${build}.bed"
+ref_fasta="${path}/examples/reference/hg38_v2/hg38.fa"
+hla_vbseq="${path}/HLAVBSeq.jar"
+process_hlas="${path}/process_hla_types.R"
+jparam="-Xmx12G"
+
 # extract reads mapping to HLA genes
 date >& 2
-
 mkdir $dir
 
 #cmd="samtools view -T $ref_fasta -bo $dir/mapped.bam -L $bed $bam"
@@ -75,7 +74,7 @@ date >& 2
 
 # run HLA-VBSeq
 
-cmd="java -Xmx12G -jar ${hlavbseq} ${fasta} ${dir}/totest.sam ${dir}/result.txt --alpha_zero 0.01 --is_paired"
+cmd="java ${jparam} -jar ${hlavbseq} ${fasta} ${dir}/totest.sam ${dir}/result.txt --alpha_zero 0.01 --is_paired"
 echo "${cmd}" >& 2; eval $cmd
 date >& 2
     
