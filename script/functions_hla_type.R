@@ -1,51 +1,57 @@
-startpath = "/frazer01/home/aphodges/software/my_hla_typing/" #"/frazer01/projects/CEGS/analysis/hla_type_1kgp/"
-genef = "pipeline/hla_typing/gene_info.txt"
-idf = "pipeline/hla_typing/id2url.txt"
-hlaset = c("HG00187", "HG01924", "HG01926", "HG01927", "NA19154")
-hla_typing_path_ = "/frazer01/home/aphodges/software/my_hla_typing/hla_typing.sh"   
-#"/frazer01/home/matteo/software/my_hla_typing/hla_typing.sh"
-allele_path_ = "/frazer01/home/aphodges/software/my_hla_typing/reference/alleles.txt"       
-#"/frazer01/home/matteo/software/my_hla_typing/reference/alleles.txt"
-mapx = "/frazer01/software/beagle-5.4/plink.GRCh37.map/plink.chr6.GRCh37.map"
-
-
+# startpath = "/frazer01/home/aphodges/software/my_hla_typing/" #"/frazer01/projects/CEGS/analysis/hla_type_1kgp/"
+# genef = "pipeline/hla_typing/gene_info.txt"
+# idf = "pipeline/hla_typing/id2url.txt"
+# hlaset = c("HG00187", "HG01924", "HG01926", "HG01927", "NA19154")
+# hla_typing_path_ = "/frazer01/home/aphodges/software/my_hla_typing/hla_typing.sh"   
+# #"/frazer01/home/matteo/software/my_hla_typing/hla_typing.sh"
+# allele_path_ = "/frazer01/home/aphodges/software/my_hla_typing/reference/alleles.txt"       
+# #"/frazer01/home/matteo/software/my_hla_typing/reference/alleles.txt"
+# mapx = "/frazer01/software/beagle-5.4/plink.GRCh37.map/plink.chr6.GRCh37.map"
+library(config)
+config::get(file="./configs/path_config.yml")
 setwd(startpath)
 source("script/functions.R")
+
 dir.create("pipeline/hla_typing/vcf", showWarnings = FALSE)
 
 # Global variables
 geneinfo            = fread(genef, sep = "\t", header = TRUE, data.table = FALSE)
-id2hla              = fread(idf   , sep = "\t", header = TRUE, data.table = FALSE)
 geneinfo            = geneinfo[order(geneinfo$start),]
-id2hla$infile       = paste("pipeline/hla_typing/processing", paste(id2hla$id, "hla_types.txt", sep = "."), sep = "/") 
-id2hla              = id2hla[ file.exists(id2hla$infile) == TRUE & !id2hla$id %in% hlaset, ]
-rownames(id2hla  )  = id2hla$id
 rownames(geneinfo)  = geneinfo$gene
 vcf_hla_types       = paste(getwd(), "pipeline/hla_typing/vcf", "hla_types.vcf.gz" , sep = "/")
 vcf_combined        = paste(getwd(), "pipeline/hla_typing/vcf", "combined.vcf.gz"  , sep = "/")
 vcf_phased          = paste(getwd(), "pipeline/hla_typing/vcf", "phased.vcf.gz"    , sep = "/")
 hla_types_list_file = paste(getwd(), "pipeline/hla_typing"    , "hla_type_list.txt", sep = "/")
 
-# Subject IDs shared between HLA types and SNPs
-command  = paste("bcftools", "query", "-l", vcf_chr6)
-ids_1kgp = fread(cmd = command, sep = "\t", header = FALSE, data.table = FALSE)[,1]
-ids      = intersect(id2hla$id, ids_1kgp)
-ids_file = paste(getwd(), "input", "ids.txt", sep = "/")
+if(myrun == "1kgp"){
+    id2hla              = fread(idf   , sep = "\t", header = TRUE, data.table = FALSE)
+    id2hla$infile       = paste("pipeline/hla_typing/processing", paste(id2hla$id, "hla_types.txt", sep = "."), sep = "/") 
+    id2hla              = id2hla[ file.exists(id2hla$infile) == TRUE & !id2hla$id %in% hlaset, ]
+    rownames(id2hla  )  = id2hla$id
 
-writeLines(ids, ids_file, sep = "\n")
+    command  = paste("bcftools", "query", "-l", vcf_chr6)
+    ids_1kgp = fread(cmd = command, sep = "\t", header = FALSE, data.table = FALSE)[,1]
+    ids      = intersect(id2hla$id, ids_1kgp)
+    ids_file = paste(getwd(), "input", "ids.txt", sep = "/")
+    writeLines(ids, ids_file, sep = "\n")
+}
+
+
+# Subject IDs shared between HLA types and SNPs
 
 # ancestry data
-ancestry_1kgp           = fread("input/1kgp/ancestry.txt"        , sep = "\t", header = FALSE, data.table = FALSE)
-pops                    = fread("input/1kgp/populations.txt"     , sep = "\t", header = TRUE , data.table = FALSE)
-superpops               = fread("input/1kgp/superpopulations.txt", sep = "\t", header = TRUE , data.table = FALSE)
-colnames(ancestry_1kgp) = c("subject_id", "population", "super_population", "sex")
-colnames(superpops    ) = c("super_population_description", "super_population")
-rownames(superpops    ) = superpops$super_population
-rownames(ancestry_1kgp) = ancestry_1kgp$subject_id
-colnames(pops         ) = gsub(" ", "_", tolower(colnames(pops)))
-pops                    = pops[!pops$population_description %in% c("Total", ""),]
-superpops$color         = c("#00ff00", "#ff00ff", "#ff0000", "#0000ff", "#ffff00")
-
+if(bcftools){
+    ancestry_1kgp           = fread("input/1kgp/ancestry.txt"        , sep = "\t", header = FALSE, data.table = FALSE)
+    pops                    = fread("input/1kgp/populations.txt"     , sep = "\t", header = TRUE , data.table = FALSE)
+    superpops               = fread("input/1kgp/superpopulations.txt", sep = "\t", header = TRUE , data.table = FALSE)
+    colnames(ancestry_1kgp) = c("subject_id", "population", "super_population", "sex")
+    colnames(superpops    ) = c("super_population_description", "super_population")
+    rownames(superpops    ) = superpops$super_population
+    rownames(ancestry_1kgp) = ancestry_1kgp$subject_id
+    colnames(pops         ) = gsub(" ", "_", tolower(colnames(pops)))
+    pops                    = pops[!pops$population_description %in% c("Total", ""),]
+    superpops$color         = c("#00ff00", "#ff00ff", "#ff0000", "#0000ff", "#ffff00")
+}
 ################################################################################################
 # Functions for HLA typing
 ################################################################################################
