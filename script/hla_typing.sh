@@ -12,7 +12,6 @@ mean_cov=$6
 read_len=$7
 path=$8
 
-
 #dir=`mktemp -d -p pipeline/hla_vbseq/TMP`
 dir="${prefix}.TMP"
 #path=    #path="~/software/my_hla_typing"            

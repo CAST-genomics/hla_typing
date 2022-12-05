@@ -1,4 +1,7 @@
-"""Generates the qsub wrappers for usage in submitting jobs."""
+"""Generates the qsub wrappers for usage in submitting jobs.
+
+Cloned from hpylori repo for hla run.
+"""
 
 import pandas as pd 
 import numpy as np
