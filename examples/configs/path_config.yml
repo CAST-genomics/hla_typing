@@ -8,3 +8,5 @@ hla_typing_path: "/frazer01/home/aphodges/software/my_hla_typing/hla_typing.sh"
 allele_path: "/frazer01/home/aphodges/software/my_hla_typing/reference/alleles.txt"       
 mapx: "/frazer01/software/beagle-5.4/plink.GRCh37.map/plink.chr6.GRCh37.map"
 bcftools: FALSE
+myrun: "mvp"
+

@@ -34,7 +34,11 @@ if(myrun == "1kgp"){
     ids      = intersect(id2hla$id, ids_1kgp)
     ids_file = paste(getwd(), "input", "ids.txt", sep = "/")
     writeLines(ids, ids_file, sep = "\n")
-}
+} 
+
+#### Note: need to clone + edit the above steps for bcftools generation
+####   This will need slight tweaking given mvp/similar design.
+
 
 
 # Subject IDs shared between HLA types and SNPs
