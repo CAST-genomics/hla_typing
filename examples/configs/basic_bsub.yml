@@ -1,0 +1,10 @@
+###Basic config recreated for bsub usage
+###Will need to modify as needed for other workspaces
+
+J: "test1" ##starting basepath is current dir in workflow
+q: "short"
+G: "study00X"
+a: "multithread(8)"
+M: 1000
+o: "dir/%J.stdout"
+e: "dir/%J.stderr"

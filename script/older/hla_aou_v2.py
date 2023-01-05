@@ -18,19 +18,19 @@ manifest_file =  "" #"2022-08-18-Shah-FFPE-DNA-Libs Info.xlsx"
 ncores = str(8)
 aou_cram = True
 
-bed = "/frazer01/home/aphodges/reference/hg38.bed"
+bed = "./hg38.bed"
 # bam = outpath + name + ".sam"
 target_cram = "gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/wgs_1000004.cram"
 local_cram = dirpath + "wgs_1000004.cram"
 chr_loc = "chr6"
 name = "wgs_1000004_script.sh"
 
-fasta = "/frazer01/home/aphodges/software/my_hla_typing/reference/hg38_v2/hg38.fa"
+fasta = "./hg38.fa"
 refloc = fasta
-hlavbseq = "/frazer01/home/aphodges/builds/hla_typing/" + "HLAVBSeq.jar"
+hlavbseq = "../../" + "HLAVBSeq.jar"
 jparam = "-Xmx12G"
 process_hlas = "./script/process_hla_types.R"
-allele = "/frazer01/home/aphodges/software/my_hla_typing/reference/alleles.txt"
+allele = "./alleles.txt"
 mean_cov = "5"
 read_len = "151"
 
@@ -81,9 +81,9 @@ if __name__ == "__main__":
         # get HLA types
         cmd12="Rscript "+process_hlas+" "+dirpath+"result.txt "+allele+" "+mean_cov+" "+read_len+""
 
-        commands = [cmd1, cmd2, cmd3, cmd4, cmd5, cmd6, cmd7, cmd10,cmd11, cmd12]
+        commands = [cmd2, cmd3, cmd4, cmd5, cmd6, cmd7, cmd8, cmd9, cmd10,cmd11, cmd12]
 
-        filehandle = "examples/scripts/"+name+".sh"
+        filehandle = "./"+name+".sh"
         # gqw.runner_command(commands,filehandle)
         q = "qsub -l short -pe smp " +ncores+ " " + \
         "-o /frazer01/home/aphodges/software/hpylori/examples/logs/combined_logs.out "+\

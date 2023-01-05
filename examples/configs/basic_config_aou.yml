@@ -1,0 +1,33 @@
+###Basic config recreated for AoU usage
+###Will need to modify as needed for other workspaces
+
+basepath: "./" ##starting basepath is current dir in workflow
+refloc: "./hg38.fa"
+dirpath: "./"
+outpath: "./output/"
+dirmanifest: "./"
+manifest_file: "cram_info.xlsx" #"2022-08-18-Shah-FFPE-DNA-Libs Info.xlsx"
+ncores: 8
+aou_cram: True
+logout: "log_out.txt"
+logerr: "log_err.txt"
+script_path: "scripts/"
+
+bed: "hg38.bed"
+fasta: "hg38.fa"
+target_cram: "gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/wgs_1000004.cram"
+local_cram: "wgs_1000004.cram"
+chr_loc: "chr6"
+fname: "mycram"
+name: "wgs_1000004_script.sh"
+
+###HLA VBSeq params and processing
+hlavbseq: "../../HLAVBSeq.jar"
+jparam: "-Xmx12G"
+process_hlas: "./script/process_hla_types.R"
+allele: "./alleles.txt"
+mean_cov: = "5"
+read_len: "151"
+
+
+

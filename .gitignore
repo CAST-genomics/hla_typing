@@ -133,6 +133,11 @@ examples/code/
 examples/results/
 *.ipynb
 pipeline/1kgp/
+work/
+.nextflow*
+script/nextflows/*
+examples/nf/
+
 
 
 
