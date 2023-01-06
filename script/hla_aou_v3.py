@@ -17,20 +17,30 @@ def read_params(config_file:str)->Dict:
         params = yaml.safe_load(file)
     return params
 
+def run_cram(target:str, local:str, chrloc:str)->None:
+    """target=target_cram, local="""
+    cramfile = pysam.AlignmentFile(target, "rc")
+    localcram = pysam.AlignmentFile(local,"wb",template=cramfile)
+    for x in cramfile.fetch(chrloc):
+        localcram.write(x)
+    localcram.close()
+    cramfile.close()
+    return
+
 
 pars = read_params("./examples/configs/basic_config_aou.yml")
 
 basepath = pars['basepath'] 
 refloc = pars['refloc'] 
 dirpath = pars['dirpath'] #"./output/"
-dirmanifest = basepath + "manifests/"
-manifest_file = ['manifest_file'] #"2022-08-18-Shah-FFPE-DNA-Libs Info.xlsx"
+dirmanifest = pars['dirmanifest'] #basepath + "manifests/"
+manifest_file = pars['manifest_file'] #"2022-08-18-Shah-FFPE-DNA-Libs Info.xlsx"
 ncores = str(pars['ncores'])
 aou_cram = bool(pars['aou_cram']) # True
 logout = pars['logout'] #"/frazer01/home/aphodges/software/hpylori/examples/logs/combined_logs.out"
 logerr = pars['logerr'] #"/frazer01/home/aphodges/software/hpylori/examples/logs/combined_logs.err"
 script_path = basepath + "/scripts/"
-outdir = pars['outdir'] # e.g. ./out/  .... add this manually
+outdir = pars['outpath'] # e.g. ./out/  .... add this manually
 
 #major inputs for files/refs/chr loc
 bed = pars['bed'] #"./hg38.bed"]  # bam = outpath + name + ".sam"
@@ -57,7 +67,7 @@ if __name__ == "__main__":
     print(manifest)
     print(samples[0])
 
-    for k in range( 1 ):   # len(samples)):
+    for k in range( len(samples)):
         # Define indexer offset for antrum or corpus type as matched in sample name
         
         ##Older code - non-AoU runner with 2 fastqs...
@@ -68,17 +78,13 @@ if __name__ == "__main__":
         
         ##Newer code version with cram file and chr6 sub-selection via pipe:
         #this replaces the cmd1 command above
+        bam = samples[k]
         if aou_cram:
-            cramfile = pysam.AlignmentFile(target_cram, "rc")
-            localcram = pysam.AlignmentFile(local_cram,"wb",template=cramfile)
-            for x in cramfile.fetch(chr_loc):
-                localcram.write(x)
-            localcram.close()
-            cramfile.close()
+            run_cram(target_cram, local_cram, chr_loc)
             #set bam to the local cramfile 
             bam = local_cram
             
-        dir2 = outdir+ "d_"+str(k)
+        dir2 = outdir+ "d_"+str(k)+"/"
         cmd1="mkdir " + outdir       
         cmd2="samtools view -bo "+dir2+"mapped.bam -L "+bed+" "+bam+""
         cmd3="samtools sort -n -o "+dir2+"sort.bam "+dir2+"mapped.bam"

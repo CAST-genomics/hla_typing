@@ -5,21 +5,21 @@ basepath: "./" ##starting basepath is current dir in workflow
 refloc: "./hg38.fa"
 dirpath: "./"
 outpath: "./output/"
-dirmanifest: "./"
-manifest_file: "cram_info.xlsx" #"2022-08-18-Shah-FFPE-DNA-Libs Info.xlsx"
+dirmanifest: "examples/"
+manifest_file: "manifest_example.xlsx" 
 ncores: 8
-aou_cram: True
+aou_cram: FALSE
 logout: "log_out.txt"
 logerr: "log_err.txt"
 script_path: "scripts/"
 
 bed: "hg38.bed"
 fasta: "hg38.fa"
-target_cram: "gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/wgs_1000004.cram"
+target_cram: "gs://*/wgs_1000004.cram"
 local_cram: "wgs_1000004.cram"
 chr_loc: "chr6"
 fname: "mycram"
-name: "wgs_1000004_script.sh"
+script_name: "wgs_1000004_script.sh"
 
 ###HLA VBSeq params and processing
 hlavbseq: "../../HLAVBSeq.jar"
