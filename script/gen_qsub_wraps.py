@@ -17,12 +17,13 @@ def somefunction(_filename:str, _colnames:List[str], _sep:str="\t" )->pd.DataFra
 def gen_header_string()->str:
     """Generate header string info for .sh files"""
     strx = "#!/bin/bash\n" + \
-    "#$ -N hpylori\n" + \
+    "#$ -N hlat\n" + \
     "#$ -pe smp 3\n" + \
     "#$ -l short\n" + \
     "#$ -V\n"
     # "#$ -cwd\n"
-    strx = strx + "source /frazer01/home/aphodges/.bashrc\n\n"
+    if 0:
+        strx = strx + "source /frazer01/home/aphodges/.bashrc\n\n"
     return strx
 
 def add_commands(list_commands:List,header:str)->str:

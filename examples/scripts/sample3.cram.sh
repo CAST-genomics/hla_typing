@@ -1,10 +1,8 @@
 #!/bin/bash
-#$ -N hpylori
+#$ -N hlat
 #$ -pe smp 3
 #$ -l short
 #$ -V
-source /frazer01/home/aphodges/.bashrc
-
 mycommand="samtools view -bo ./output/d_2/mapped.bam -L hg38.bed sample3.cram"; eval $mycommand 
 mycommand="samtools sort -n -o ./output/d_2/sort.bam ./output/d_2/mapped.bam"; eval $mycommand 
 mycommand="samtools fixmate -O bam ./output/d_2/sort.bam ./output/d_2/fixmate.bam"; eval $mycommand 

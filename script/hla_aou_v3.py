@@ -44,8 +44,9 @@ outdir = pars['outpath'] # e.g. ./out/  .... add this manually
 
 #major inputs for files/refs/chr loc
 bed = pars['bed'] #"./hg38.bed"]  # bam = outpath + name + ".sam"
-target_cram = pars['target_cram']  #"gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/wgs_1000004.cram"
-local_cram = dirpath + pars['local_cram']  #"wgs_1000004.cram"
+#Target and local cram will be auto-generated from the manifest file for new selected columns.
+# target_cram = pars['target_cram']  #"gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/wgs_1000004.cram"
+# local_cram = dirpath + pars['local_cram']  #"wgs_1000004.cram"
 chr_loc = pars['chr_loc']  #"chr6"
 name = pars['script_name']  #"wgs_1000004_script.sh"
 
@@ -62,10 +63,7 @@ read_len = pars['read_len'] #"151"
 if __name__ == "__main__":
     manifest = pd.read_excel(dirmanifest + manifest_file)
     samples = manifest.loc[:,"Sample Name"]
-    
-    #print(len(samples))
-    #print(manifest)
-    #print(samples[0])
+    targets = manifest.loc[:,"Target Cram"]
 
     for k in range( len(samples)):
         # Define indexer offset for antrum or corpus type as matched in sample name
@@ -79,10 +77,13 @@ if __name__ == "__main__":
         ##Newer code version with cram file and chr6 sub-selection via pipe:
         #this replaces the cmd1 command above
         bam = samples[k]
+        local_cram = bam
+        target_cram = targets[k]
+        
         if aou_cram:
             run_cram(target_cram, local_cram, chr_loc)
             #set bam to the local cramfile 
-            bam = local_cram
+            #bam = local_cram
             
         dir2 = outdir+ "d_"+str(k)+"/"
         cmd1="mkdir " + outdir       
