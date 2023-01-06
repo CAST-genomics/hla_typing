@@ -39,7 +39,7 @@ ncores = str(pars['ncores'])
 aou_cram = bool(pars['aou_cram']) # True
 logout = pars['logout'] #"/frazer01/home/aphodges/software/hpylori/examples/logs/combined_logs.out"
 logerr = pars['logerr'] #"/frazer01/home/aphodges/software/hpylori/examples/logs/combined_logs.err"
-script_path = basepath + "/scripts/"
+script_path = pars['script_path']  # basepath + "/scripts/"
 outdir = pars['outpath'] # e.g. ./out/  .... add this manually
 
 #major inputs for files/refs/chr loc
@@ -63,9 +63,9 @@ if __name__ == "__main__":
     manifest = pd.read_excel(dirmanifest + manifest_file)
     samples = manifest.loc[:,"Sample Name"]
     
-    print(len(samples))
-    print(manifest)
-    print(samples[0])
+    #print(len(samples))
+    #print(manifest)
+    #print(samples[0])
 
     for k in range( len(samples)):
         # Define indexer offset for antrum or corpus type as matched in sample name
@@ -109,11 +109,11 @@ if __name__ == "__main__":
         #cmd12c = "rm "
         commands = [cmd2, cmd3, cmd4, cmd5, cmd6, cmd7, cmd8, cmd9, cmd10,cmd11, cmd12]
 
-        filehandle = "./"+name+".sh"
-        # gqw.runner_command(commands,filehandle)
-        q = "qsub -l short -pe smp " +ncores+ " " + \
-        "-o " + logout +\
-        "-e "+ logerr +\
-        script_path + name+".sh"
+        filehandle = script_path + bam + ".sh"
+        gqw.runner_command(commands,filehandle)
+        q = "qsub -l short -pe smp " +ncores+ \
+        " -o " + logout +\
+        " -e "+ logerr +\
+        " " + script_path + bam +".sh"
         print(q)
         print(commands)

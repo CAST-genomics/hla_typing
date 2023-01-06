@@ -11,7 +11,7 @@ ncores: 8
 aou_cram: FALSE
 logout: "log_out.txt"
 logerr: "log_err.txt"
-script_path: "scripts/"
+script_path: "./examples/scripts/"
 
 bed: "hg38.bed"
 fasta: "hg38.fa"
@@ -26,7 +26,7 @@ hlavbseq: "../../HLAVBSeq.jar"
 jparam: "-Xmx12G"
 process_hlas: "./script/process_hla_types.R"
 allele: "./alleles.txt"
-mean_cov: = "5"
+mean_cov: "5"
 read_len: "151"
 
 
