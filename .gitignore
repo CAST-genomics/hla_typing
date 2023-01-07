@@ -138,7 +138,7 @@ work/
 script/nextflows/*
 examples/nf/
 script/aou/_exclude_.ipynb
-
+examples/configs/basic_bsub.yml
 
 
 
