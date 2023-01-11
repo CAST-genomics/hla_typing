@@ -24,12 +24,16 @@ def run_cram(target:str, local:str, chrloc:str)->None:
 
 
 if __name__ == "__main__":
-
+    cfpath = "./examples/configs/basic_config_aou.yml"
+    if len(sys.argv) > 1:
+        cfpath = sys.argv[1]
+    
     [basepath, refloc, dirpath, dirmanifest, manifest_file, \
     ncores, aou_cram, logout, logerr, script_path, outdir, \
 	bed, chr_loc, name, fasta, refloc, hlavbseq, jparam, \
-	process_hlas, allele, mean_cov, read_len] = cr.get_params()
-
+	process_hlas, allele, mean_cov, read_len] = cr.get_params(cfpath)
+    
+    
     manifest = pd.read_excel(dirmanifest + manifest_file)
     samples = manifest.loc[:,"Sample Name"]
     targets = manifest.loc[:,"Target Cram"]
@@ -60,6 +64,7 @@ if __name__ == "__main__":
         cmd3="samtools sort -n -o "+dir2+"sort.bam "+dir2+"mapped.bam"
         cmd3c = "rm "+dir2+"mapped.bam"
         cmd4="samtools fixmate -O bam "+dir2+"sort.bam "+dir2+"fixmate.bam"
+        cmd4c = "rm "+dir2+"fixmate.bam"
         cmd5="samtools fastq -n -0 "+dir2+"mapped.0.fastq -s "+dir2+"mapped.s.fastq -1 "+\
             dirpath+"mapped.1.fastq -2 " + dir2 +"mapped.2.fastq "+dir2+"fixmate.bam"
         cmd6="samtools view -bh -f 12 -o "+dir2+"unmapped.bam "+bam+""

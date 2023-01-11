@@ -3,7 +3,6 @@
 
 from typing import Dict, List
 import yaml
-import pysam
 
 
 def read_params(config_file:str)->Dict:
