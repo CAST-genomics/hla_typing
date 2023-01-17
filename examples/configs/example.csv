@@ -1,0 +1,3 @@
+person_id,cram_uri,cram_index_uri
+1,/some/path/A,/some/path/A_i
+2,/some/path/B,/some/path/B_i

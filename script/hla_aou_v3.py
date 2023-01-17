@@ -22,6 +22,16 @@ def run_cram(target:str, local:str, chrloc:str)->None:
     cramfile.close()
     return
 
+def run_cram2(target:str="wgs_10004.cram", local:str="mapped.bam", ref:str="hg38.bed")->None:
+    """target=target_cram, local= """
+    cramfile = pysam.AlignmentFile(target, "rc")
+    localcram = pysam.AlignmentFile(local,"wb",template=cramfile)
+    rows = pysam.view("-L",ref,"-b","-o",local,target)
+    for x in rows:
+        localcram.write(x)
+    localcram.close()
+    cramfile.close()
+    return
 
 if __name__ == "__main__":
     cfpath = "./examples/configs/basic_config_aou.yml"
