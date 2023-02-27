@@ -23,10 +23,14 @@ def run_cram(target:str, local:str, chrloc:str)->None:
     return
 
 def run_cram2(target:str="wgs_10004.cram", local:str="mapped.bam", ref:str="hg38.bed")->None:
-    """target=target_cram, local= """
+    """
+    ref=hg38.bed
+    local/out=mapped.bam
+    target/sample=gs://*/wgs_*.cram
+    """
     cramfile = pysam.AlignmentFile(target, "rc")
     localcram = pysam.AlignmentFile(local,"wb",template=cramfile)
-    rows = pysam.view("-L",ref,"-b","-o",local,target)
+    rows = pysam.view("-L",ref,"-o",local,"-b",target)
     for x in rows:
         localcram.write(x)
     localcram.close()
