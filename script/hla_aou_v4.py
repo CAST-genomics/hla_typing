@@ -22,7 +22,7 @@ def run_cram(target:str, local:str, chrloc:str)->None:
     cramfile.close()
     return
 
-def run_cram2(target:str="wgs_10004.cram", local:str="mapped.bam", ref:str="hg38.bed")->None:
+def run_cram2(target:str="wgs_*.cram", local:str="mapped.bam", ref:str="hg38.bed")->None:
     """
     ref=hg38.bed
     local/out=mapped.bam
@@ -54,13 +54,7 @@ if __name__ == "__main__":
 
     for k in range( len(samples)):
         # Define indexer offset for antrum or corpus type as matched in sample name
-        
-        ##Older code - non-AoU runner with 2 fastqs...
-        # if 0:
-        #     cmd1="bwa mem -a -t " +ncores +" "+refloc+" "+startpath + sample1 + " " +\
-        #         startpath + sample2 + " > " + outpath + name + ".sam"
-        #     Rout = outpath+name
-        
+            
         ##Newer code version with cram file and chr6 sub-selection via pipe:
         #this replaces the cmd1 command above
         bam = samples[k]
