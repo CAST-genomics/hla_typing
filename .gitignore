@@ -141,6 +141,8 @@ script/aou/_exclude_.ipynb
 examples/configs/basic_bsub.yml
 examples/scripts/P1_T0_R1_antrum_S19_L003.sh
 examples/scripts/testrun.sh
+script/cromwell/gatk_example.wdl
+
 
 
 
