@@ -1,4 +1,5 @@
 #!/usr/bin/bash
+#modified from AoU example
 
 while getopts p:l:j:u:f: flag
 do

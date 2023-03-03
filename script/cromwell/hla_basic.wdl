@@ -2,16 +2,13 @@
 
 workflow HLATyping {
 
-	File inputCram
-    File Reference
-    File Alleles
-    File Bed
-    String location
-    String input_cram
-	String cram_name = basename(input_cram,".cram")
-
-    Array[File] cramfiles
-
+    File Alleles # alleles.gen.fasta
+    File Bed #hg38.bed
+    String location # path to do the work in
+    String base_name #example = wg_100004 
+	String cram_name = basename(base_name,".cram")
+    #Array[File] cramfiles
+    
 	# Int? preemptible_tries
 	# Int preemptible_count = select_first([preemptible_tries, 3])
     call Setup {
@@ -19,30 +16,66 @@ workflow HLATyping {
         # Also copy over any other needed files to this directory
         input:
             my_dir = location,
-            #base_
             my_cram = cram_name,
         #output here is none, path is assumed to exist
     }
 
     call Process_cram {
         input:
-            input_cram = my_cram
+            my_cram=Setup.local_cram, #wgs_1000004.cram 
+            my_bam=base_name + ".bam",  #wgs_1000004.bam
+            preemptible_count=2,
+            bed_file=Bed,   
     }
 
     call sort_bam {
         input:
-            input_cram = my_cram
+            local_bam=Process_cram.local_bam, #= wgs_1000004.bam
+            preemptible_count = 2,
+            Sort_bam = Process_cram.local_bam + "_sort.bam" #= sort_bam = sort_bam
+            #input_cram = my_cram
     }
 
-    call fixmate {}
-    call fastq_1 {}
-    call fastq1_unmapped {}
-    call fastq1_unmapped2 {}
-    call bwa_alleles {}
-    call HLAVBSeq {}
+    call fixmate {
+        input:
+            sort_bam=sort_bam.sort_bam, #sort.bam
+            preemptible_count = 2
+    }
+
+    call fastq_1 {
+        input:
+            fixmate=fixmate.fixmate,
+            preemptible_count = 2
+    }
+
+    call fastq1_unmapped {
+        input:
+            input_bam=Process_cram.local_bam, # wgs_1000004.bam
+            preemptible_count = 2
+    }
+    call fastq1_unmapped2 {
+        input:
+            unmapped = fastq1_unmapped.unmapped,
+            preemptible_count = 2
+    }
+    call bwa_alleles {
+        input:
+            alleles=Alleles, #alleles.gen.fasta
+            mapped1=fastq_1.mapped1,
+            mapped2=fastq_1.mapped2,
+            unmapped1=fastq1_unmapped2.unmapped1,
+            unmapped2=fastq1_unmapped2.unmapped2,
+            preemptible_count = 2,
+    }
+    call HLAVBSeq {
+        input:
+            alleles="alleles.gen.fasta", #alleles.gen.fasta
+            samout=bwa_alleles.samout, #totest.sam
+            preemptible_count = 2 #
+    }
     
     output {
-        # File recalibrated_bam = ApplyBQSR.output_bam
+        File output_file = HLAVBSeq.result
         # File recalibrated_bam_index = ApplyBQSR.output_bam_index
         # File merged_vcf = MergeVCFs.output_vcf
         # File merged_vcf_index = MergeVCFs.output_vcf_index
@@ -55,13 +88,11 @@ workflow HLATyping {
 
 task Setup{
     String my_dir
-    File my_cram
+    String my_cram
     Int preemptible_count = 2
     command <<<
         echo ${my_dir};
-        !gsutil -u {project} cp gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/${my_cram}* .
-        # may need to move some files here for 
-        # if 0:
+        echo "gsutil -u {project} cp gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/${my_cram}* ."
         # !bwa/bwa index alleles.gen.fasta
     >>>
     output{
@@ -77,16 +108,17 @@ task Setup{
 
 
 task Process_cram{
-    File my_cram
+    File my_cram # = local_cram #wgs_1000004.cram
+    String my_bam  #wgs_1000004.bam
     Int preemptible_count = 2
     File bed_file # hg38.bed
 
     command <<<
-        echo samtools view -b -L ${bed_file} -@ 7 wgs_1000004.cram > wgs_1000004.bam
+        echo samtools view -b -L ${bed_file} -@ 7 ${my_cram} > ${my_bam}
     >>>
 
     output{
-        File local_cram = my_cram
+        File local_bam = my_bam
     }
     runtime{
         #docker: docker
@@ -98,16 +130,16 @@ task Process_cram{
 
 
 task sort_bam {
-    File x
+    File local_bam #= wgs_1000004.bam
     Int preemptible_count = 2
-    String my_cram
+    String Sort_bam = local_bam + "_sort.bam" #= sort_bam = sort_bam
 
     command <<<
-        echo samtools sort -n -@ 7 -o sort.bam wgs_1000004.bam
+        echo samtools sort -n -@ 7 -o ${Sort_bam} ${local_bam}
     >>>
     
     output{
-        File local_cram = my_cram
+        File sort_bam = Sort_bam
     }
     runtime{
         #docker: docker
@@ -119,15 +151,15 @@ task sort_bam {
 
 
 task fixmate{
-    File x
+    File sort_bam #sort.bam
     Int preemptible_count = 2
 
     command <<<
-        echo samtools fixmate -O bam -@ 7 sort.bam fixmate.bam
+        echo samtools fixmate -O bam -@ 7 ${sort_bam} fixmate.bam
     >>>
     
     output{
-        File local_cram = my_cram
+        File fixmate = "fixmate.bam"
     }
     runtime{
         #docker: docker
@@ -140,15 +172,18 @@ task fixmate{
 
 
 task fastq_1 {
-    File x
+    File fixmate #fixmate.bam
     Int preemptible_count = 2
 
     command <<<
-        echo samtools fastq -@ 7 -n -0 mapped.0.fastq -s mapped.s.fastq -1 mapped.1.fastq -2 mapped.2.fastq fixmate.bam
+        echo samtools fastq -@ 7 -n -0 mapped.0.fastq -s mapped.s.fastq -1 mapped.1.fastq -2 mapped.2.fastq ${fixmate}
     >>>
     
     output{
-        File local_cram = my_cram
+        File mapped0 = "mapped.0.fastq"
+        File mapped1 = "mapped.1.fastq"
+        File mapped2 = "mapped.2.fastq"
+        File mappeds = "mapped.s.fastq"
     }
     runtime{
         #docker: docker
@@ -161,15 +196,15 @@ task fastq_1 {
 
 
 task fastq1_unmapped {
-    File x
+    File input_bam # wgs_1000004.bam
     Int preemptible_count = 2
 
     command <<<
-        echo samtools view -bh -f 12 -o unmapped.bam -@ 7 wgs_1000004.bam
+        echo samtools view -bh -f 12 -o unmapped.bam -@ 7 ${input_bam}
     >>>
     
     output{
-        File local_cram = my_cram
+        File unmapped = "unmapped.bam"
     }
     runtime{
         #docker: docker
@@ -181,15 +216,18 @@ task fastq1_unmapped {
 
 
 task fastq1_unmapped2 {
-    File x
+    File unmapped # = unmapped.bam
     Int preemptible_count = 2
 
     command <<<
-        echo samtools fastq -@ 7 -n -0 unmapped.0.fastq -s unmapped.s.fastq -1 unmapped.1.fastq -2 unmapped.2.fastq unmapped.bam
+        echo samtools fastq -@ 7 -n -0 unmapped.0.fastq -s unmapped.s.fastq -1 unmapped.1.fastq -2 unmapped.2.fastq ${unmapped}
     >>>
     
     output{
-        File local_cram = my_cram
+        File unmapped0 = "unmapped.0.fastq"
+        File unmapped1 = "unmapped.1.fastq"
+        File unmapped2 = "unmapped.2.fastq"
+        File unmappeds = "unmapped.s.fastq"
     }
     runtime{
         #docker: docker
@@ -202,7 +240,13 @@ task fastq1_unmapped2 {
 
 
 task bwa_alleles{
-    File x
+    File alleles #alleles.gen.fasta
+    File mapped1
+    File mapped2
+    File unmapped1
+    File unmapped2 
+    #later add unmapped1
+    #later add unmapped2 
     Int preemptible_count = 2
 
     command <<<
@@ -210,7 +254,7 @@ task bwa_alleles{
     >>>
     
     output{
-        File local_cram = my_cram
+        File samout = "totest.sam"
     }
     runtime{
         #docker: docker
@@ -223,15 +267,16 @@ task bwa_alleles{
 
 
 task HLAVBSeq {
-    File x
-    Int preemptible_count = 2
+    File alleles #alleles.gen.fasta
+    File samout #totest.sam
+    Int preemptible_count = 2 #
 
     command <<<
-        echo java -Xmx12G -jar ./HLAVBSeq.jar alleles.gen.fasta totest.sam result.txt --alpha_zero 0.01 --is_paired
+        echo java -Xmx12G -jar ./HLAVBSeq.jar ${alleles} ${samout} result.txt --alpha_zero 0.01 --is_paired
     >>>
     
     output{
-        File local_cram = my_cram
+        File result = "result.txt"
     }
     runtime{
         #docker: docker
