@@ -1,4 +1,4 @@
-version 2.0
+version draft-2
 
 ### Basic test wdl workflow for Aou environment
 

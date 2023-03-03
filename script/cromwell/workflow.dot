@@ -1,0 +1,17 @@
+// HLATyping
+digraph {
+	compound=true
+	"call-Setup" [label=Setup shape=cds]
+	"call-Process_cram" [label=Process_cram shape=cds]
+	"call-sort_bamfile" [label=sort_bamfile shape=cds]
+	"call-fixmate" [label=fixmate shape=cds]
+	"call-fastq_1" [label=fastq_1 shape=cds]
+	"call-bwa_alleles" [label=bwa_alleles shape=cds]
+	"call-HLAVBSeq" [label=HLAVBSeq shape=cds]
+	"call-Setup" -> "call-Process_cram"
+	"call-Process_cram" -> "call-sort_bamfile"
+	"call-sort_bamfile" -> "call-fixmate"
+	"call-fixmate" -> "call-fastq_1"
+	"call-fastq_1" -> "call-bwa_alleles"
+	"call-bwa_alleles" -> "call-HLAVBSeq"
+}
