@@ -1,7 +1,8 @@
+version 2.0
+
 ### Basic test wdl workflow for Aou environment
 
 workflow HLATyping {
-
     File Alleles # alleles.gen.fasta
     File Bed #hg38.bed
     String location # path to do the work in
@@ -28,7 +29,7 @@ workflow HLATyping {
             bed_file=Bed,   
     }
 
-    call sort_bam {
+    call sort_bamfile {
         input:
             local_bam=Process_cram.local_bam, #= wgs_1000004.bam
             preemptible_count = 2,
@@ -38,40 +39,42 @@ workflow HLATyping {
 
     call fixmate {
         input:
-            sort_bam=sort_bam.sort_bam, #sort.bam
-            preemptible_count = 2
+            sort_bam=sort_bamfile.sort_bam, #sort.bam
+            preemptible_count = 2,
+            fixmate_out="fixmate.bam"
     }
 
     call fastq_1 {
         input:
-            fixmate=fixmate.fixmate,
+            Fixmate=fixmate.fixmate_bam,
             preemptible_count = 2
     }
 
-    call fastq1_unmapped {
-        input:
-            input_bam=Process_cram.local_bam, # wgs_1000004.bam
-            preemptible_count = 2
-    }
-    call fastq1_unmapped2 {
-        input:
-            unmapped = fastq1_unmapped.unmapped,
-            preemptible_count = 2
-    }
+    # call fastq1_unmapped {
+    #     input:
+    #         input_bam=Process_cram.local_bam, # wgs_1000004.bam
+    #         preemptible_count = 2
+    # }
+    # call fastq1_unmapped2 {
+    #     input:
+    #         unmapped = fastq1_unmapped.unmapped,
+    #         preemptible_count = 2
+    # }
     call bwa_alleles {
         input:
             alleles=Alleles, #alleles.gen.fasta
             mapped1=fastq_1.mapped1,
             mapped2=fastq_1.mapped2,
-            unmapped1=fastq1_unmapped2.unmapped1,
-            unmapped2=fastq1_unmapped2.unmapped2,
+            # unmapped1=fastq1_unmapped2.unmapped1,
+            # unmapped2=fastq1_unmapped2.unmapped2,
             preemptible_count = 2,
     }
     call HLAVBSeq {
         input:
-            alleles="alleles.gen.fasta", #alleles.gen.fasta
+            alleles=Alleles, #alleles.gen.fasta
             samout=bwa_alleles.samout, #totest.sam
-            preemptible_count = 2 #
+            preemptible_count = 2, #
+            result_loc="result.txt"
     }
     
     output {
@@ -129,7 +132,7 @@ task Process_cram{
 }
 
 
-task sort_bam {
+task sort_bamfile {
     File local_bam #= wgs_1000004.bam
     Int preemptible_count = 2
     String Sort_bam = local_bam + "_sort.bam" #= sort_bam = sort_bam
@@ -153,13 +156,14 @@ task sort_bam {
 task fixmate{
     File sort_bam #sort.bam
     Int preemptible_count = 2
+    String fixmate_out #fixmate.bam
 
     command <<<
-        echo samtools fixmate -O bam -@ 7 ${sort_bam} fixmate.bam
+        echo samtools fixmate -O bam -@ 7 ${sort_bam} ${fixmate_out}
     >>>
     
     output{
-        File fixmate = "fixmate.bam"
+        File fixmate_bam=fixmate_out
     }
     runtime{
         #docker: docker
@@ -172,11 +176,11 @@ task fixmate{
 
 
 task fastq_1 {
-    File fixmate #fixmate.bam
+    File Fixmate #fixmate.bam
     Int preemptible_count = 2
 
     command <<<
-        echo samtools fastq -@ 7 -n -0 mapped.0.fastq -s mapped.s.fastq -1 mapped.1.fastq -2 mapped.2.fastq ${fixmate}
+        echo samtools fastq -@ 7 -n -0 mapped.0.fastq -s mapped.s.fastq -1 mapped.1.fastq -2 mapped.2.fastq ${Fixmate}
     >>>
     
     output{
@@ -241,16 +245,16 @@ task fastq1_unmapped2 {
 
 task bwa_alleles{
     File alleles #alleles.gen.fasta
-    File mapped1
-    File mapped2
-    File unmapped1
-    File unmapped2 
+    File mapped1 #mapped.1.fastq
+    File mapped2 #mapped.2.fastq
+    #File unmapped1 #unmapped
+    #File unmapped2 
     #later add unmapped1
     #later add unmapped2 
-    Int preemptible_count = 2
+    Int preemptible_count # = 2
 
     command <<<
-        echo bwa/bwa mem -t -8 -P -L 10000 -a alleles.gen.fasta mapped.1.fastq mapped.2.fastq > totest.sam
+        echo bwa/bwa mem -t -8 -P -L 10000 -a ${alleles} ${mapped1} ${mapped2} > totest.sam
     >>>
     
     output{
@@ -269,14 +273,15 @@ task bwa_alleles{
 task HLAVBSeq {
     File alleles #alleles.gen.fasta
     File samout #totest.sam
-    Int preemptible_count = 2 #
+    Int preemptible_count # = 2 #
+    String result_loc
 
     command <<<
-        echo java -Xmx12G -jar ./HLAVBSeq.jar ${alleles} ${samout} result.txt --alpha_zero 0.01 --is_paired
+        echo java -Xmx12G -jar ./HLAVBSeq.jar ${alleles} ${samout} ${result_loc} --alpha_zero 0.01 --is_paired
     >>>
     
     output{
-        File result = "result.txt"
+        File result=result_loc
     }
     runtime{
         #docker: docker
