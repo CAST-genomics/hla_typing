@@ -25,14 +25,14 @@ workflow HLATyping {
         input:
             my_cram=Setup.local_cram, #wgs_1000004.cram 
             my_bam=base_name + ".bam",  #wgs_1000004.bam
-            preemptible_count=2,
+            preemptible_count=8,
             bed_file=Bed,   
     }
 
     call sort_bamfile {
         input:
             local_bam=Process_cram.local_bam, #= wgs_1000004.bam
-            preemptible_count = 2,
+            preemptible_count=8,
             Sort_bam = Process_cram.local_bam + "_sort.bam" #= sort_bam = sort_bam
             #input_cram = my_cram
     }
@@ -40,14 +40,14 @@ workflow HLATyping {
     call fixmate {
         input:
             sort_bam=sort_bamfile.sort_bam, #sort.bam
-            preemptible_count = 2,
+            preemptible_count = 8,
             fixmate_out="fixmate.bam"
     }
 
     call fastq_1 {
         input:
             Fixmate=fixmate.fixmate_bam,
-            preemptible_count = 2
+            preemptible_count = 8
     }
 
     # call fastq1_unmapped {
@@ -67,7 +67,7 @@ workflow HLATyping {
             mapped2=fastq_1.mapped2,
             # unmapped1=fastq1_unmapped2.unmapped1,
             # unmapped2=fastq1_unmapped2.unmapped2,
-            preemptible_count = 2,
+            preemptible_count = 8,
     }
     call HLAVBSeq {
         input:
