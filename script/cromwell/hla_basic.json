@@ -1,5 +1,10 @@
 {
   "##_COMMENT1": "Input",
+  "#genericworkflow.setup.alleles": "alleles.gen.fasta",
+  "#genericworkflow.setup.bed": "hg38.bed",
+  "#genericworkflow.setup.location": "./",
+  "#genericworkflow.setup.base_name":"wg_....",
+  
   "genericworkflow.GenericTask.shell_command": "cat ./generic-workflow.input.json > ./output/catjson.txt; cat ./generic-workflow.wdl > ./output/catwdl.txt",
   "genericworkflow.GenericTask.input_files": ["/home/bshifaw/gatk-workflows/generic-wdl-script/generic-workflow.input.json", "/home/bshifaw/gatk-workflows/generic-wdl-script/generic-workflow.wdl"],
   "genericworkflow.GenericTask.output_dir": "./output/",
