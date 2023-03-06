@@ -1,13 +1,16 @@
-version draft-2
+version 1.0
 
 ### Basic test wdl workflow for Aou environment
 
 workflow HLATyping {
-    File Alleles # alleles.gen.fasta
-    File Bed #hg38.bed
-    String location # path to do the work in
-    String base_name #example = wg_100004 
-	String cram_name = basename(base_name,".cram")
+    
+    input {
+        File Alleles # alleles.gen.fasta
+        File Bed #hg38.bed
+        String location # path to do the work in
+        String base_name #example = wg_100004 
+        String cram_name = basename(base_name,".cram")
+    }
     #Array[File] cramfiles
     
 	# Int? preemptible_tries
@@ -16,8 +19,9 @@ workflow HLATyping {
         # This should create the directory location, pull cram, and confirm data are available
         # Also copy over any other needed files to this directory
         input:
-            my_dir = location,
+            #my_dir = location,
             my_cram = cram_name,
+            preemptible_count = 2
         #output here is none, path is assumed to exist
     }
 
@@ -90,9 +94,11 @@ workflow HLATyping {
 
 
 task Setup{
-    String my_dir
-    String my_cram
-    Int preemptible_count = 2
+    input{
+        # String my_dir
+        String my_cram
+        Int preemptible_count = 2
+    }
     command <<<
         echo ${my_dir};
         echo "gsutil -u {project} cp gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/${my_cram}* ."
@@ -111,11 +117,12 @@ task Setup{
 
 
 task Process_cram{
-    File my_cram # = local_cram #wgs_1000004.cram
-    String my_bam  #wgs_1000004.bam
-    Int preemptible_count = 2
-    File bed_file # hg38.bed
-
+    input{
+        File my_cram # = local_cram #wgs_1000004.cram
+        String my_bam  #wgs_1000004.bam
+        Int preemptible_count = 2
+        File bed_file # hg38.bed
+    }
     command <<<
         echo samtools view -b -L ${bed_file} -@ 7 ${my_cram} > ${my_bam}
     >>>
@@ -133,10 +140,11 @@ task Process_cram{
 
 
 task sort_bamfile {
-    File local_bam #= wgs_1000004.bam
-    Int preemptible_count = 2
-    String Sort_bam = local_bam + "_sort.bam" #= sort_bam = sort_bam
-
+    input{
+        File local_bam #= wgs_1000004.bam
+        Int preemptible_count = 2
+        String Sort_bam = local_bam + "_sort.bam" #= sort_bam = sort_bam
+    }
     command <<<
         echo samtools sort -n -@ 7 -o ${Sort_bam} ${local_bam}
     >>>
@@ -154,9 +162,11 @@ task sort_bamfile {
 
 
 task fixmate{
-    File sort_bam #sort.bam
-    Int preemptible_count = 2
-    String fixmate_out #fixmate.bam
+    input{
+        File sort_bam #sort.bam
+        Int preemptible_count = 2
+        String fixmate_out #fixmate.bam
+    }
 
     command <<<
         echo samtools fixmate -O bam -@ 7 ${sort_bam} ${fixmate_out}
@@ -176,9 +186,10 @@ task fixmate{
 
 
 task fastq_1 {
-    File Fixmate #fixmate.bam
-    Int preemptible_count = 2
-
+    input{
+        File Fixmate #fixmate.bam
+        Int preemptible_count = 2
+    }
     command <<<
         echo samtools fastq -@ 7 -n -0 mapped.0.fastq -s mapped.s.fastq -1 mapped.1.fastq -2 mapped.2.fastq ${Fixmate}
     >>>
@@ -200,9 +211,10 @@ task fastq_1 {
 
 
 task fastq1_unmapped {
-    File input_bam # wgs_1000004.bam
-    Int preemptible_count = 2
-
+    input{
+        File input_bam # wgs_1000004.bam
+        Int preemptible_count = 2
+    }
     command <<<
         echo samtools view -bh -f 12 -o unmapped.bam -@ 7 ${input_bam}
     >>>
@@ -220,9 +232,10 @@ task fastq1_unmapped {
 
 
 task fastq1_unmapped2 {
-    File unmapped # = unmapped.bam
-    Int preemptible_count = 2
-
+    input{
+        File unmapped # = unmapped.bam
+        Int preemptible_count = 2
+    }
     command <<<
         echo samtools fastq -@ 7 -n -0 unmapped.0.fastq -s unmapped.s.fastq -1 unmapped.1.fastq -2 unmapped.2.fastq ${unmapped}
     >>>
@@ -244,15 +257,16 @@ task fastq1_unmapped2 {
 
 
 task bwa_alleles{
-    File alleles #alleles.gen.fasta
-    File mapped1 #mapped.1.fastq
-    File mapped2 #mapped.2.fastq
-    #File unmapped1 #unmapped
-    #File unmapped2 
-    #later add unmapped1
-    #later add unmapped2 
-    Int preemptible_count # = 2
-
+    input{
+        File alleles #alleles.gen.fasta
+        File mapped1 #mapped.1.fastq
+        File mapped2 #mapped.2.fastq
+        #File unmapped1 #unmapped
+        #File unmapped2 
+        #later add unmapped1
+        #later add unmapped2 
+        Int preemptible_count # = 2
+    }
     command <<<
         echo bwa/bwa mem -t -8 -P -L 10000 -a ${alleles} ${mapped1} ${mapped2} > totest.sam
     >>>
@@ -271,11 +285,12 @@ task bwa_alleles{
 
 
 task HLAVBSeq {
-    File alleles #alleles.gen.fasta
-    File samout #totest.sam
-    Int preemptible_count # = 2 #
-    String result_loc
-
+    input{
+        File alleles #alleles.gen.fasta
+        File samout #totest.sam
+        Int preemptible_count # = 2 #
+        String result_loc
+    }
     command <<<
         echo java -Xmx12G -jar ./HLAVBSeq.jar ${alleles} ${samout} ${result_loc} --alpha_zero 0.01 --is_paired
     >>>
