@@ -7,7 +7,7 @@ workflow HLATyping {
     input {
         File Alleles # alleles.gen.fasta
         File Bed #hg38.bed
-        String location # path to do the work in
+        # String location # path to do the work in
         String base_name #example = wg_100004 
         String cram_name = basename(base_name,".cram")
     }

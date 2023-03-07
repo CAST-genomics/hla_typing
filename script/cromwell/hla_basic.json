@@ -4,6 +4,10 @@
   "#genericworkflow.setup.bed": "hg38.bed",
   "#genericworkflow.setup.location": "./",
   "#genericworkflow.setup.base_name":"wg_....",
+  "HLATyping.Alleles":"alleles.gen.fasta",
+  "HLATyping.base_name":"wgs_1000004",
+  "HLATyping.location":"./",
+  "HLATyping.Bed:":"hg38.bed",
   
   "genericworkflow.GenericTask.shell_command": "cat ./generic-workflow.input.json > ./output/catjson.txt; cat ./generic-workflow.wdl > ./output/catwdl.txt",
   "genericworkflow.GenericTask.input_files": ["/home/bshifaw/gatk-workflows/generic-wdl-script/generic-workflow.input.json", "/home/bshifaw/gatk-workflows/generic-wdl-script/generic-workflow.wdl"],
