@@ -91,8 +91,8 @@ task Setup{
         Int preemptible_count = 2
     }
     command <<<
-        echo ${my_dir};
-        echo "gsutil -u {project} cp gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/${my_cram}* ."
+        # echo ${my_dir};
+        echo gsutil -u {project} cp gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/~{my_cram}* .
         # !bwa/bwa index alleles.gen.fasta
     >>>
     output{
@@ -115,7 +115,7 @@ task Process_cram{
         File bed_file # hg38.bed
     }
     command <<<
-        echo samtools view -b -L ${bed_file} -@ 4 ${my_cram} > ${my_bam}
+        echo samtools view -b -L ~{bed_file} -@ 4 ~{my_cram} > ~{my_bam}
     >>>
 
     output{

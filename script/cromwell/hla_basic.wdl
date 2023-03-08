@@ -100,8 +100,8 @@ task Setup{
         Int preemptible_count = 2
     }
     command <<<
-        echo ${my_dir};
-        echo "gsutil -u {project} cp gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/${my_cram}* ."
+        echo ~{my_cram}
+        echo gsutil -u {project} cp gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/~{my_cram}* .
         # !bwa/bwa index alleles.gen.fasta
     >>>
     output{
@@ -124,7 +124,7 @@ task Process_cram{
         File bed_file # hg38.bed
     }
     command <<<
-        echo samtools view -b -L ${bed_file} -@ 7 ${my_cram} > ${my_bam}
+        echo samtools view -b -L ~{bed_file} -@ 7 ~{my_cram} > ~{my_bam}
     >>>
 
     output{
@@ -146,7 +146,7 @@ task sort_bamfile {
         String Sort_bam = local_bam + "_sort.bam" #= sort_bam = sort_bam
     }
     command <<<
-        echo samtools sort -n -@ 7 -o ${Sort_bam} ${local_bam}
+        echo samtools sort -n -@ 7 -o ~{Sort_bam} ~{local_bam}
     >>>
     
     output{
@@ -169,7 +169,7 @@ task fixmate{
     }
 
     command <<<
-        echo samtools fixmate -O bam -@ 7 ${sort_bam} ${fixmate_out}
+        echo samtools fixmate -O bam -@ 7 ~{sort_bam} ~{fixmate_out}
     >>>
     
     output{
@@ -191,7 +191,7 @@ task fastq_1 {
         Int preemptible_count = 2
     }
     command <<<
-        echo samtools fastq -@ 7 -n -0 mapped.0.fastq -s mapped.s.fastq -1 mapped.1.fastq -2 mapped.2.fastq ${Fixmate}
+        echo samtools fastq -@ 7 -n -0 mapped.0.fastq -s mapped.s.fastq -1 mapped.1.fastq -2 mapped.2.fastq ~{Fixmate}
     >>>
     
     output{
@@ -216,7 +216,7 @@ task fastq1_unmapped {
         Int preemptible_count = 2
     }
     command <<<
-        echo samtools view -bh -f 12 -o unmapped.bam -@ 7 ${input_bam}
+        echo samtools view -bh -f 12 -o unmapped.bam -@ 7 ~{input_bam}
     >>>
     
     output{
@@ -237,7 +237,7 @@ task fastq1_unmapped2 {
         Int preemptible_count = 2
     }
     command <<<
-        echo samtools fastq -@ 7 -n -0 unmapped.0.fastq -s unmapped.s.fastq -1 unmapped.1.fastq -2 unmapped.2.fastq ${unmapped}
+        echo samtools fastq -@ 7 -n -0 unmapped.0.fastq -s unmapped.s.fastq -1 unmapped.1.fastq -2 unmapped.2.fastq ~{unmapped}
     >>>
     
     output{
@@ -268,7 +268,7 @@ task bwa_alleles{
         Int preemptible_count # = 2
     }
     command <<<
-        echo bwa/bwa mem -t -8 -P -L 10000 -a ${alleles} ${mapped1} ${mapped2} > totest.sam
+        echo bwa/bwa mem -t -8 -P -L 10000 -a ~{alleles} ~{mapped1} ~{mapped2} > totest.sam
     >>>
     
     output{
@@ -283,7 +283,6 @@ task bwa_alleles{
 }
 
 
-
 task HLAVBSeq {
     input{
         File alleles #alleles.gen.fasta
@@ -292,7 +291,7 @@ task HLAVBSeq {
         String result_loc
     }
     command <<<
-        echo java -Xmx12G -jar ./HLAVBSeq.jar ${alleles} ${samout} ${result_loc} --alpha_zero 0.01 --is_paired
+        echo java -Xmx8G -jar ./HLAVBSeq.jar ~{alleles} ~{samout} ~{result_loc} --alpha_zero 0.01 --is_paired
     >>>
     
     output{
@@ -300,7 +299,7 @@ task HLAVBSeq {
     }
     runtime{
         #docker: docker
-		memory: "4 GB"
+		memory: "8 GB"
 		#disks: "local-disk " + sub(((size(unmapped_bam,"GB")+1)*5),"\\..*","") + " HDD"
 		preemptible: preemptible_count
     }
