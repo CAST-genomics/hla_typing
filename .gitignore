@@ -143,6 +143,8 @@ examples/scripts/P1_T0_R1_antrum_S19_L003.sh
 examples/scripts/testrun.sh
 script/cromwell/gatk_example.wdl
 script/cromwell/gatk_basic.json
+womtool-85.jar
+
 
 
 
