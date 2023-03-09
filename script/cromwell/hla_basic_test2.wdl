@@ -115,7 +115,7 @@ task Process_cram{
         File bed_file # hg38.bed
     }
     command <<<
-        echo samtools view -b -L ~{bed_file} -@ 4 ~{my_cram} > ~{my_bam}
+        samtools view -b -L ~{bed_file} -@ 4 ~{my_cram} > ~{my_bam}
     >>>
 
     output{
