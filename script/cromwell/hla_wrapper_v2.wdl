@@ -1,6 +1,6 @@
 version 1.0
 
-import "hla_basic_test.wdl" as hla
+import "hla_basic_test2.wdl" as hla
 #import "hla_wrapper.wdl" as hla
 
 workflow main{
