@@ -91,12 +91,12 @@ task Setup{
         Int preemptible_count = 2
     }
     command <<<
-        # echo ${my_dir};
-        echo gsutil -u {project} cp gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/~{my_cram}* .
+        gsutil -u {project} cp gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/~{my_cram}* .
         # !bwa/bwa index alleles.gen.fasta
     >>>
     output{
-        File local_cram = my_cram
+        File local_cram = my_cram + ".cram"
+        File local_crai = my_cram + ".crai"
     }
     runtime{
         docker: "us.gcr.io/broad-gatk/gatk:4.2.5.0"
