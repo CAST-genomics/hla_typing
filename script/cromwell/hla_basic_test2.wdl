@@ -8,7 +8,7 @@ workflow HLATyping {
         File Bed #hg38.bed
         String location # path to do the work in
         String base_name #example = wg_100004 
-        String cram_name = basename(base_name,".cram")
+        String cram_name #= basename(base_name,".cram")
     }
     #Array[File] cramfiles
     
@@ -26,7 +26,7 @@ workflow HLATyping {
 
     call Process_cram {
         input:
-            my_cram= basename(base_name,".cram"), #Setup.local_cram, #wgs_1000004.cram 
+            my_cram= cram_name,   #basename(base_name,".cram"), #Setup.local_cram, #wgs_1000004.cram 
             my_bam=base_name + ".bam",  #wgs_1000004.bam
             preemptible_count=8,
             bed_file=Bed,   
