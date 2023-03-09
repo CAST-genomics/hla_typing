@@ -99,9 +99,9 @@ task Setup{
         File local_cram = my_cram
     }
     runtime{
-        #docker: docker
+        docker: "us.gcr.io/broad-gatk/gatk:4.2.5.0"
 		memory: "4 GB"
-		#disks: "local-disk " + sub(((size(unmapped_bam,"GB")+1)*5),"\\..*","") + " HDD"
+		cpu: 4 #disks: "local-disk " + sub(((size(unmapped_bam,"GB")+1)*5),"\\..*","") + " HDD"
 		preemptible: preemptible_count
     }
 }
@@ -122,10 +122,11 @@ task Process_cram{
         File local_bam = my_bam
     }
     runtime{
-        #docker: docker
+        docker: "us.gcr.io/broad-gatk/gatk:4.2.5.0"
 		memory: "4 GB"
-		#disks: "local-disk " + sub(((size(unmapped_bam,"GB")+1)*5),"\\..*","") + " HDD"
-		preemptible: preemptible_count
+		#disks: #"local-disk " + sub(((size(unmapped_bam,"GB")+1)*5),"\\..*","") + " HDD"
+		cpu: 2
+        preemptible: preemptible_count
     }
 }
 

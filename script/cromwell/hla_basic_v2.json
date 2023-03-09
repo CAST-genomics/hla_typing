@@ -1,0 +1,5 @@
+{
+  "main.alleleFile":"~/workflows/hlatyping/alleles.gen.fasta",
+  "main.cram_manifest":"~/workflows/hlatyping/cram_manifest.txt",
+  "main.bedfile":"~/workflows/hlatyping/hg38.bed"
+}
