@@ -8,6 +8,7 @@ workflow main{
         String cram_manifest
         File alleleFile
         File bedfile
+        String refs
     }
     Array[Array[String]] batch_crams = read_tsv( cram_manifest )
 
@@ -16,9 +17,10 @@ workflow main{
             input: 
                 Alleles=alleleFile,
                 Bed=bedfile,
-                location="./",
+                location=refs,
                 base_name= i[0], 
-                cram_name= i[0] + ".cram"
+                # cram_name= i[0] + ".cram"
+
         }        
     }
 }

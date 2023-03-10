@@ -8,7 +8,7 @@ workflow HLATyping {
         File Bed #hg38.bed
         String location # path to do the work in
         String base_name #example = wg_100004 
-        String cram_name #= basename(base_name,".cram")
+        #String cram_name #= basename(base_name,".cram")
     }
     #Array[File] cramfiles
     
@@ -26,10 +26,11 @@ workflow HLATyping {
 
     call Process_cram {
         input:
-            my_cram= cram_name,   #basename(base_name,".cram"), #Setup.local_cram, #wgs_1000004.cram 
+            my_cram= location + base_name + ".cram",   #basename(base_name,".cram"), #Setup.local_cram, #wgs_1000004.cram 
+            cram_index= location + base_name + ".crai",
             my_bam=base_name + ".bam",  #wgs_1000004.bam
             preemptible_count=8,
-            bed_file=Bed,   
+            bed_file=location + Bed,   
     }
 
     # call sort_bamfile {
@@ -110,12 +111,13 @@ task Setup{
 task Process_cram{
     input{
         File my_cram # = local_cram #wgs_1000004.cram
+        File cram_index #
         String my_bam  #wgs_1000004.bam
         Int preemptible_count = 2
         File bed_file # hg38.bed
     }
     command <<<
-        samtools view -b -L ~{bed_file} -@ 4 ~{my_cram} > ~{my_bam}
+        samtools view -b -L -X ~{bed_file} -@ 4 ~{my_cram} ~{cram_index} > ~{my_bam}
     >>>
 
     output{
