@@ -91,7 +91,7 @@ task Setup{
     input{
         # String my_dir
         String my_cram
-        Int preemptible_count = 2
+        Int preemptible_count = 1
     }
     command <<<
         gsutil -u {project} cp gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/~{my_cram}* .
