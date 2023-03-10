@@ -10,7 +10,7 @@ from typing import Dict, List
 def read_json(inputfile:str)->Dict:
     """read in the json and return dict"""
     with open(inputfile) as json_file:
-        data = json.load(json_file)
+        data = json.loads(json_file)
     return data
 
 def add_params(inputdict:Dict, params:str)->Dict:
@@ -28,7 +28,7 @@ def add_params(inputdict:Dict, params:str)->Dict:
 
 def write_json(outputdict:Dict, fileout:str, flag:str=True )->None:
     """write final json to file, optional print"""
-    outputjson = json.dumps(outputdict)
+    outputjson = json.dumps(outputdict,dep)
     if flag:
         print(outputjson)
     with open(fileout, "w") as outfile:

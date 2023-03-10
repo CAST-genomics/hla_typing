@@ -8,6 +8,7 @@ workflow HLATyping {
         File Bed #hg38.bed
         String location # path to do the work in
         String base_name #example = wg_100004 
+        String cram_path
         #String cram_name #= basename(base_name,".cram")
     }
     #Array[File] cramfiles
@@ -23,14 +24,15 @@ workflow HLATyping {
     #         preemptible_count = 2
     #     #output here is none, path is assumed to exist
     # }
-
+    
     call Process_cram {
         input:
-            my_cram= location + base_name + ".cram",   #basename(base_name,".cram"), #Setup.local_cram, #wgs_1000004.cram 
-            cram_index= location + base_name + ".crai",
+            my_cram= cram_path + base_name + ".cram",   #basename(base_name,".cram"), #Setup.local_cram, #wgs_1000004.cram 
+            cram_index= cram_path + base_name + ".crai",
             my_bam=base_name + ".bam",  #wgs_1000004.bam
             preemptible_count=8,
             bed_file=location + Bed,   
+
     }
 
     # call sort_bamfile {

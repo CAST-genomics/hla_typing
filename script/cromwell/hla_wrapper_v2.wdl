@@ -19,6 +19,7 @@ workflow main{
                 Bed=bedfile,
                 location=refs,
                 base_name= i[0], 
+                cram_path = "gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/"
                 # cram_name= i[0] + ".cram"
 
         }        
