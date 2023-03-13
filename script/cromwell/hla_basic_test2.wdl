@@ -130,7 +130,8 @@ task Process_cram{
     }
     runtime{
         docker: "us.gcr.io/broad-gatk/gatk:4.2.5.0"
-		memory: "4 GB"
+        bootDiskSizeGb: 100
+        disks: "local-disk 100 HDD"
 		#disks: #"local-disk " + sub(((size(unmapped_bam,"GB")+1)*5),"\\..*","") + " HDD"
 		cpu: 2
         preemptible: preemptible_count
