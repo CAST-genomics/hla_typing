@@ -15,22 +15,23 @@ workflow HLATyping {
     
 	# Int? preemptible_tries
 	# Int preemptible_count = select_first([preemptible_tries, 3])
-    # call Setup {
-    #     # This should create the directory location, pull cram, and confirm data are available
-    #     # Also copy over any other needed files to this directory
-    #     input:
-    #         #my_dir = location,
-    #         my_cram = cram_name,
-    #         preemptible_count = 2
-    #     #output here is none, path is assumed to exist
-    # }
+    call Setup {
+        # This should create the directory location, pull cram, and confirm data are available
+        # Also copy over any other needed files to this directory
+        input:
+            #my_dir = location,
+            my_cram = cram_path + base_name,
+            preemptible_count = 1
+        #output here is none, path is assumed to exist
+    }
     
+
     call Process_cram {
         input:
-            my_cram= cram_path + base_name + ".cram",   #basename(base_name,".cram"), #Setup.local_cram, #wgs_1000004.cram 
-            cram_index= cram_path + base_name + ".cram.crai",
+            my_cram= Setup.local_cram,  #cram_path + base_name + ".cram",   #basename(base_name,".cram"), #Setup.local_cram, #wgs_1000004.cram 
+            cram_index= Setup.local_crai, # + ".cram.crai",
             my_bam=base_name + ".bam",  #wgs_1000004.bam
-            preemptible_count=8,
+            preemptible_count=1,
             bed_file=location + Bed,   
 
     }
@@ -75,7 +76,8 @@ workflow HLATyping {
     
     output {
         #File result_file = HLAVBSeq.result
-        #File result_file = Setup.local_cram
+        File my_cram = Setup.local_cram
+        File my_crai = Setup.local_crai
         File result_file = Process_cram.local_bam
         #File test_
         # File recalibrated_bam_index = ApplyBQSR.output_bam_index
@@ -90,22 +92,21 @@ workflow HLATyping {
 task Setup{
     input{
         # String my_dir
-        String my_cram
+        String my_cram #wildcard to get 
         Int preemptible_count = 1
     }
     command <<<
-        gsutil -u {project} cp gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/~{my_cram}* .
+        gsutil -u {project} cp ~{my_cram + ".*"} .
         # !bwa/bwa index alleles.gen.fasta
     >>>
     output{
         File local_cram = my_cram + ".cram"
-        File local_crai = my_cram + ".crai"
+        File local_crai = my_cram + ".cram.crai"
     }
     runtime{
-        docker: "us.gcr.io/broad-gatk/gatk:4.2.5.0"
-		memory: "8 GB"
-        disks: "local-disk 60 HDD"
-        cpu: 8 #disks: "local-disk " + sub(((size(unmapped_bam,"GB")+1)*5),"\\..*","") + " HDD"
+        #docker: "us.gcr.io/broad-gatk/gatk:4.2.5.0"
+		memory: "4 GB"
+		#cpu: 4 #disks: "local-disk " + sub(((size(unmapped_bam,"GB")+1)*5),"\\..*","") + " HDD"
 		preemptible: preemptible_count
     }
 }
@@ -120,7 +121,7 @@ task Process_cram{
         File bed_file # hg38.bed
     }
     command <<<
-        samtools view -b -L ~{bed_file} -@ 4 -X ~{my_cram} ~{cram_index} > ~{my_bam}
+        samtools view -b -L -X ~{bed_file} -@ 4 ~{my_cram} ~{cram_index} > ~{my_bam}
     >>>
 
     output{
