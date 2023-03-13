@@ -104,7 +104,9 @@ task Setup{
     runtime{
         docker: "us.gcr.io/broad-gatk/gatk:4.2.5.0"
 		memory: "8 GB"
-        disks: "local-disk 60 HDD"
+        bootDiskSizeGb: 100
+        disks: "local-disk 100 HDD"
+
         cpu: 8 #disks: "local-disk " + sub(((size(unmapped_bam,"GB")+1)*5),"\\..*","") + " HDD"
 		preemptible: preemptible_count
     }
