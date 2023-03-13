@@ -130,7 +130,8 @@ task Process_cram{
     }
     runtime{
         #docker: "us.gcr.io/broad-dsde-methods/samtoolscloud:bucket.access"  #"us.gcr.io/broad-gatk/gatk:4.2.5.0"
-        docker: "us.gcr.io/broad-gatk/gatk:4.2.6.1"
+        #docker: "us.gcr.io/broad-gatk/gatk:4.2.6.1"
+        docker: "us.gcr.io/broad-dsp-gcr-public/terra-jupyter-aou:2.1.17"
         bootDiskSizeGb: 100
         disks: "local-disk 100 HDD"
 		#disks: #"local-disk " + sub(((size(unmapped_bam,"GB")+1)*5),"\\..*","") + " HDD"
