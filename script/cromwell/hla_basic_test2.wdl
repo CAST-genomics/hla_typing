@@ -102,7 +102,7 @@ task Setup{
         File local_crai = my_cram + ".crai"
     }
     runtime{
-        docker: "us.gcr.io/broad-gatk/gatk:4.2.5.0"
+        #docker: "us.gcr.io/broad-gatk/gatk:4.2.5.0"
 		memory: "8 GB"
         bootDiskSizeGb: 20
         disks: "local-disk 100 HDD"
@@ -129,7 +129,7 @@ task Process_cram{
         File local_bam = my_bam
     }
     runtime{
-        docker: "us.gcr.io/broad-dsde-methods/samtoolscloud:bucket.access"  #"us.gcr.io/broad-gatk/gatk:4.2.5.0"
+        #docker: "us.gcr.io/broad-dsde-methods/samtoolscloud:bucket.access"  #"us.gcr.io/broad-gatk/gatk:4.2.5.0"
         bootDiskSizeGb: 100
         disks: "local-disk 100 HDD"
 		#disks: #"local-disk " + sub(((size(unmapped_bam,"GB")+1)*5),"\\..*","") + " HDD"
