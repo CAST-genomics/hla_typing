@@ -102,7 +102,7 @@ task Setup{
         File local_crai = my_cram + ".crai"
     }
     runtime{
-        #docker: "us.gcr.io/broad-gatk/gatk:4.2.5.0"
+        docker: "us.gcr.io/broad-gatk/gatk:4.2.6.1"
 		memory: "8 GB"
         bootDiskSizeGb: 20
         disks: "local-disk 100 HDD"
