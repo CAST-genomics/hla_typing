@@ -121,7 +121,7 @@ task Process_cram{
         File bed_file # hg38.bed
     }
     command <<<
-        samtools view -b -L -X ~{bed_file} -@ 4 ~{my_cram} ~{cram_index} > ~{my_bam}
+        samtools view -b -L ~{bed_file} -@ 4 -X ~{my_cram} ~{cram_index} > ~{my_bam}
     >>>
 
     output{

@@ -44,26 +44,25 @@ workflow HLATyping {
     call fixmate {
         input:
             sort_bam=sort_bamfile.sort_bam, #sort.bam
-            preemptible_count = 8,
+            preemptible_count = 1,
             fixmate_out="fixmate.bam"
     }
 
     call fastq_1 {
         input:
             Fixmate=fixmate.fixmate_bam,
-            preemptible_count = 8
+            preemptible_count = 1
     }
-
-    # call fastq1_unmapped {
-    #     input:
-    #         input_bam=Process_cram.local_bam, # wgs_1000004.bam
-    #         preemptible_count = 2
-    # }
-    # call fastq1_unmapped2 {
-    #     input:
-    #         unmapped = fastq1_unmapped.unmapped,
-    #         preemptible_count = 2
-    # }
+    call fastq1_unmapped {
+        input:
+            input_bam=Process_cram.local_bam, # wgs_1000004.bam
+            preemptible_count = 1
+    }
+    call fastq1_unmapped2 {
+        input:
+            unmapped = fastq1_unmapped.unmapped,
+            preemptible_count = 1
+    }
     call bwa_alleles {
         input:
             alleles=Alleles, #alleles.gen.fasta
@@ -212,11 +211,11 @@ task fastq_1 {
 
 task fastq1_unmapped {
     input{
-        File input_bam # wgs_1000004.bam
+        File input_cram # wgs_1000004.bam
         Int preemptible_count = 2
     }
     command <<<
-        echo samtools view -bh -f 12 -o unmapped.bam -@ 7 ~{input_bam}
+        echo samtools view -bh -f 12 -o unmapped.bam -@ 7 ~{input_cram}
     >>>
     
     output{
@@ -261,14 +260,14 @@ task bwa_alleles{
         File alleles #alleles.gen.fasta
         File mapped1 #mapped.1.fastq
         File mapped2 #mapped.2.fastq
-        #File unmapped1 #unmapped
-        #File unmapped2 
+        File unmapped1 #unmapped
+        File unmapped2 
         #later add unmapped1
         #later add unmapped2 
         Int preemptible_count # = 2
     }
     command <<<
-        echo bwa/bwa mem -t -8 -P -L 10000 -a ~{alleles} ~{mapped1} ~{mapped2} > totest.sam
+        echo bwa/bwa mem -t -8 -P -L 10000 -a ~{alleles} ~{mapped1} ~{mapped2} ~{unmapped1} ~{unmapped2} > totest.sam
     >>>
     
     output{

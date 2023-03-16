@@ -10,6 +10,7 @@ workflow main{
         File bedfile
         String refs
     }
+    
     Array[Array[String]] batch_crams = read_tsv( cram_manifest )
 
     scatter(i in batch_crams){

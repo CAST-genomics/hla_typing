@@ -102,7 +102,7 @@ task Setup{
         File local_crai = my_cram + ".crai"
     }
     runtime{
-        docker: "us.gcr.io/broad-gatk/gatk:4.2.6.1"
+        docker: "gcr.io/ucsd-medicine-cast/hlatyping:latest" #us.gcr.io/broad-gatk/gatk:4.2.6.1"
 		memory: "8 GB"
         bootDiskSizeGb: 20
         disks: "local-disk 100 HDD"
@@ -131,7 +131,8 @@ task Process_cram{
     runtime{
         #docker: "us.gcr.io/broad-dsde-methods/samtoolscloud:bucket.access"  #"us.gcr.io/broad-gatk/gatk:4.2.5.0"
         #docker: "us.gcr.io/broad-gatk/gatk:4.2.6.1"
-        docker: "us.gcr.io/broad-dsp-gcr-public/terra-jupyter-aou:2.1.17"
+        #docker: "us.gcr.io/broad-dsp-gcr-public/terra-jupyter-aou:2.1.17"
+        docker: "gcr.io/ucsd-medicine-cast/hlatyping:latest"
         bootDiskSizeGb: 100
         disks: "local-disk 100 HDD"
 		#disks: #"local-disk " + sub(((size(unmapped_bam,"GB")+1)*5),"\\..*","") + " HDD"
