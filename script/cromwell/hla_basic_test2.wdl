@@ -27,10 +27,10 @@ workflow HLATyping {
     
     call Process_cram {
         input:
-            # my_cram= cram_path + base_name + ".cram",   #basename(base_name,".cram"), #Setup.local_cram, #wgs_1000004.cram 
-            # cram_index= cram_path + base_name + ".cram.crai",
-            my_cram = base_name + ".cram",
-            cram_index = base_name + ".cram.crai",
+            my_cram= cram_path + base_name + ".cram",   #basename(base_name,".cram"), #Setup.local_cram, #wgs_1000004.cram 
+            cram_index= cram_path + base_name + ".cram.crai",
+            # my_cram = base_name + ".cram",
+            # cram_index = base_name + ".cram.crai",
             # my_cram = "/cromwell_root/fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/"+base_name+".cram",
             # cram_index = "/cromwell_root/fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/"+base_name+".cram.crai",
             my_bam=base_name + ".bam",  #wgs_1000004.bam
@@ -126,8 +126,9 @@ task Process_cram{
         File bed_file # hg38.bed
     }
     command <<<
-        samtools view -b -L ~{bed_file} -@ 4 -o ~{my_bam} -X ~{my_cram} ~{cram_index} 
+        # samtools view -b -L ~{bed_file} -@ 4 -o ~{my_bam} -X ~{my_cram} ~{cram_index} 
         # ls /cromwell_root/; ls gs://fc-aou-datasets-controlled/
+        echo "test \n"; ls gs://fc_aou-datasets-controlled/ ; echo "end of output\n"
     >>>
 
     output{
