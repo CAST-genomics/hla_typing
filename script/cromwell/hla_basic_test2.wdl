@@ -124,7 +124,8 @@ task Process_cram{
         File bed_file # hg38.bed
     }
     command <<<
-        samtools view -b -L ~{bed_file} -@ 4 -o ~{my_bam} -X ~{my_cram} ~{cram_index} 
+        # samtools view -b -L ~{bed_file} -@ 4 -o ~{my_bam} -X ~{my_cram} ~{cram_index} 
+        ls /cromwell_root/; ls gs://fc-aou-datasets-controlled/
     >>>
 
     output{
