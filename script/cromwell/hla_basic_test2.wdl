@@ -128,7 +128,7 @@ task Process_cram{
     command <<<
         # samtools view -b -L ~{bed_file} -@ 4 -o ~{my_bam} -X ~{my_cram} ~{cram_index} 
         # ls /cromwell_root/; ls gs://fc-aou-datasets-controlled/  ###note gs* path is not accessible/empty
-        echo "test \n"; ls /cromwell_root/fc-aou-datasets-controlled/ ; echo "\nend of output\n"; tree;
+        echo "test \n"; ls /cromwell_root/fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/ ; echo "\nend of output\n";
     >>>
 
     output{
