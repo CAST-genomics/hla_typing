@@ -27,8 +27,10 @@ workflow HLATyping {
     
     call Process_cram {
         input:
-            my_cram= cram_path + base_name + ".cram",   #basename(base_name,".cram"), #Setup.local_cram, #wgs_1000004.cram 
-            cram_index= cram_path + base_name + ".cram.crai",
+            # my_cram= cram_path + base_name + ".cram",   #basename(base_name,".cram"), #Setup.local_cram, #wgs_1000004.cram 
+            # cram_index= cram_path + base_name + ".cram.crai",
+            my_cram = "/cromwell_root/fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/"+base_name+".cram",
+            cram_index = "/cromwell_root/fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/"+base_name+".cram.crai",
             my_bam=base_name + ".bam",  #wgs_1000004.bam
             preemptible_count=8,
             bed_file=location + Bed,   
