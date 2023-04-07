@@ -27,10 +27,10 @@ workflow HLATyping {
     
     call Process_cram {
         input:
-            my_cram= cram_path + base_name + ".cram",   #basename(base_name,".cram"), #Setup.local_cram, #wgs_1000004.cram 
-            cram_index= cram_path + base_name + ".cram.crai",
-            # my_cram = base_name + ".cram",
-            # cram_index = base_name + ".cram.crai",
+            # my_cram= cram_path + base_name + ".cram",   #basename(base_name,".cram"), #Setup.local_cram, #wgs_1000004.cram 
+            # cram_index= cram_path + base_name + ".cram.crai",
+            my_cram = base_name + ".cram",
+            cram_index = base_name + ".cram.crai",
             # my_cram = "/cromwell_root/fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/"+base_name+".cram",
             # cram_index = "/cromwell_root/fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/"+base_name+".cram.crai",
             my_bam=base_name + ".bam",  #wgs_1000004.bam
@@ -125,10 +125,17 @@ task Process_cram{
         Int preemptible_count = 2
         File bed_file # hg38.bed
     }
+    String localpath = "/cromwell_root/fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/"
+    String cram = localpath + my_cram
+    String crai = localpath + cram_index
+    String bam = localpath + my_bam
     command <<<
         # samtools view -b -L ~{bed_file} -@ 4 -o ~{my_bam} -X ~{my_cram} ~{cram_index} 
+        samtools view -b -L ~{bed_file} -@ 4 -o ~{bam} -X ~{cram} ~{crai} 
         # ls /cromwell_root/; ls gs://fc-aou-datasets-controlled/  ###note gs* path is not accessible/empty
-        echo "test \n"; ls /cromwell_root/fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/ ; echo "\nend of output\n";
+        # confirmed file location at 
+
+        # echo "test \n"; ls /cromwell_root/fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/ ; echo "\nend of output\n";
     >>>
 
     output{
