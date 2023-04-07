@@ -19,9 +19,10 @@ workflow HLATyping {
         # This should create the directory location, pull cram, and confirm data are available
         # Also copy over any other needed files to this directory
         input:
+            my_cram = base_name,
             #my_dir = location,
-            my_cram= cram_path + base_name + ".cram",   #basename(base_name,".cram"), #Setup.local_cram, #wgs_1000004.cram 
-            cram_index= cram_path + base_name + ".cram.crai",
+            #my_cram= cram_path + base_name + ".cram",   #basename(base_name,".cram"), #Setup.local_cram, #wgs_1000004.cram 
+            #cram_index= cram_path + base_name + ".cram.crai",
             # my_cram = cram_name,
             preemptible_count = 1
         #output here is none, path is assumed to exist
@@ -96,7 +97,7 @@ task Setup{
     input{
         # String my_dir
         String my_cram
-        String cram_index
+        # String cram_index
         Int preemptible_count = 1
     }
     String localpath = "~/" #"/cromwell_root/fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/"
