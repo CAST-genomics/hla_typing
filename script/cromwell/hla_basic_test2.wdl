@@ -15,28 +15,29 @@ workflow HLATyping {
     
 	# Int? preemptible_tries
 	# Int preemptible_count = select_first([preemptible_tries, 3])
-    # call Setup {
-    #     # This should create the directory location, pull cram, and confirm data are available
-    #     # Also copy over any other needed files to this directory
-    #     input:
-    #         #my_dir = location,
-    #         my_cram = cram_name,
-    #         preemptible_count = 2
-    #     #output here is none, path is assumed to exist
-    # }
+    call Setup {
+        # This should create the directory location, pull cram, and confirm data are available
+        # Also copy over any other needed files to this directory
+        input:
+            #my_dir = location,
+            my_cram= cram_path + base_name + ".cram",   #basename(base_name,".cram"), #Setup.local_cram, #wgs_1000004.cram 
+            cram_index= cram_path + base_name + ".cram.crai",
+            # my_cram = cram_name,
+            preemptible_count = 1
+        #output here is none, path is assumed to exist
+    }
     
     call Process_cram {
         input:
-            # my_cram= cram_path + base_name + ".cram",   #basename(base_name,".cram"), #Setup.local_cram, #wgs_1000004.cram 
-            # cram_index= cram_path + base_name + ".cram.crai",
-            my_cram = base_name + ".cram",
-            cram_index = base_name + ".cram.crai",
+            my_cram= Setup.local_cram,  #cram_path + base_name + ".cram",   #basename(base_name,".cram"), #Setup.local_cram, #wgs_1000004.cram 
+            cram_index= Setup.local_crai,   #cram_path + base_name + ".cram.crai",
+            # my_cram = base_name + ".cram",
+            # cram_index = base_name + ".cram.crai",
             # my_cram = "/cromwell_root/fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/"+base_name+".cram",
             # cram_index = "/cromwell_root/fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/"+base_name+".cram.crai",
             my_bam=base_name + ".bam",  #wgs_1000004.bam
             preemptible_count=8,
-            bed_file=location + Bed,   
-
+            bed_file= location + Bed,   
     }
 
     # call sort_bamfile {
@@ -95,23 +96,24 @@ task Setup{
     input{
         # String my_dir
         String my_cram
+        String cram_index
         Int preemptible_count = 1
     }
+    String localpath = "~/" #"/cromwell_root/fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/"
     command <<<
-        gsutil -u {project} cp gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/~{my_cram}* .
+        gsutil -u {project} cp gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/~{my_cram}* ~{localpath}*
         # !bwa/bwa index alleles.gen.fasta
     >>>
     output{
-        File local_cram = my_cram + ".cram"
-        File local_crai = my_cram + ".crai"
+        File local_cram = localpath + my_cram + ".cram"
+        File local_crai = localpath + my_cram + ".crai"
     }
     runtime{
-        docker: "gcr.io/ucsd-medicine-cast/hlatyping:latest" #us.gcr.io/broad-gatk/gatk:4.2.6.1"
+        docker: "us.gcr.io/broad-gatk/gatk:4.2.6.1" # "gcr.io/ucsd-medicine-cast/hlatyping:latest" 
 		memory: "8 GB"
-        bootDiskSizeGb: 20
+        bootDiskSizeGb: 100
         disks: "local-disk 100 HDD"
-
-        cpu: 8 #disks: "local-disk " + sub(((size(unmapped_bam,"GB")+1)*5),"\\..*","") + " HDD"
+        cpu: 2 #disks: "local-disk " + sub(((size(unmapped_bam,"GB")+1)*5),"\\..*","") + " HDD"
 		preemptible: preemptible_count
     }
 }
@@ -125,13 +127,13 @@ task Process_cram{
         Int preemptible_count = 2
         File bed_file # hg38.bed
     }
-    String localpath = "/cromwell_root/fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/"
-    String cram = localpath + my_cram
-    String crai = localpath + cram_index
-    String bam = localpath + my_bam
+    # String localpath = "/cromwell_root/fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/"
+    # String cram = localpath + my_cram
+    # String crai = localpath + cram_index
+    # String bam = localpath + my_bam
     command <<<
         # samtools view -b -L ~{bed_file} -@ 4 -o ~{my_bam} -X ~{my_cram} ~{cram_index} 
-        samtools view -b -L ~{bed_file} -@ 4 -o ~{bam} -X ~{cram} ~{crai} 
+        samtools view -b -L ~{bed_file} -@ 4 -o ~{my_bam} -X ~{my_cram} ~{cram_index} 
         # ls /cromwell_root/; ls gs://fc-aou-datasets-controlled/  ###note gs* path is not accessible/empty
         # confirmed file location at 
 
