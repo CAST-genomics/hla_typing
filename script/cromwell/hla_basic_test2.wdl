@@ -102,7 +102,8 @@ task Setup{
     }
     String localpath = "~/" #"/cromwell_root/fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/"
     command <<<
-        gsutil -u {project} cp gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/~{my_cram}* ~{localpath}*
+        cp /cromwell_root/fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/~{my_cram}* ~{localpath}*
+        # gsutil -u {project} cp gs://fc-aou-datasets-controlled/pooled/wgs/cram/v6_base/~{my_cram}* ~{localpath}*
         # !bwa/bwa index alleles.gen.fasta
     >>>
     output{
@@ -110,7 +111,7 @@ task Setup{
         File local_crai = localpath + my_cram + ".crai"
     }
     runtime{
-        docker: "us.gcr.io/broad-gatk/gatk:4.2.6.1" # "gcr.io/ucsd-medicine-cast/hlatyping:latest" 
+        docker: "gcr.io/ucsd-medicine-cast/hlatyping:latest"  #"us.gcr.io/broad-gatk/gatk:4.2.6.1" # 
 		memory: "8 GB"
         bootDiskSizeGb: 100
         disks: "local-disk 100 HDD"
