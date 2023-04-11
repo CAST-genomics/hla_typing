@@ -134,8 +134,9 @@ examples/results/
 #*.ipynb
 pipeline/1kgp/
 work/
-.nextflow*
-script/nextflows/*
+.nextflow.log*
+.nextflow/*
+#script/nextflows/*
 examples/nf/
 script/aou/_exclude_.ipynb
 examples/configs/basic_bsub.yml
