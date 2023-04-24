@@ -12,8 +12,8 @@
 // params.hlavbseq = "/home/drew/builds/cast/hla_typing/script/HLAVBSeq.jar"
 // params.outtxt = "/home/drew/models/yeast_cram/hla_out" + params.sample + ".txt"
 
-parameter_json = file(params.in)
-new groovy.json.JsonSlurper().parseText(parameter_json.text).each { k, v -> params[k] = v }
+// parameter_json = file(params.in)
+// new groovy.json.JsonSlurper().parseText(parameter_json.text).each { k, v -> params[k] = v }
 
 // println params.alpha
 // println params.beta 
