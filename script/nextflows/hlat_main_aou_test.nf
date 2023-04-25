@@ -1,22 +1,4 @@
-#!/usr/bin/env nextflow
-// params.sample = "HG02580_chr6"
-// params.cram = "/home/drew/builds/hla_typing/"+params.sample + ".cram" //HG02580.alt_bwamem_GRCh38DH.20150718.ACB.low_coverage.cram"  // "/home/drew/models/yeast_cram/yeast.cram"
-// params.crai = "/home/drew/builds/hla_typing/"+params.sample + ".cram.crai" //HG02580.alt_bwamem_GRCh38DH.20150718.ACB.low_coverage.cram.crai" // "/home/drew/models/yeast_cram/yeast.cram.crai"
-// params.alleles = "/home/drew/models/yeast_cram/alleles.gen.fasta"
-// params.bed = "/home/drew/builds/cast/hla_typing/examples/data/reference/hg38.bed"  // yeast_regions.bed"
-// params.bam = "/home/drew/models/yeast_cram/"+params.sample+ ".bam"
-// params.path = "/home/drew/models/yeast_cram/"
-// // params.base_name = "/home/drew/models/yeast_cram/yeast_new"
-// params.out = "/home/drew/builds/cast/hla_typing/examples/results/nf_stdout.txt"
-// cores = "7"
-// params.hlavbseq = "/home/drew/builds/cast/hla_typing/script/HLAVBSeq.jar"
-// params.outtxt = "/home/drew/models/yeast_cram/hla_out" + params.sample + ".txt"
-
-// parameter_json = file(params.in)
-// new groovy.json.JsonSlurper().parseText(parameter_json.text).each { k, v -> params[k] = v }
-
-// println params.alpha
-// println params.beta 
+// #!/usr/bin/env nextflow
 
 process view_cram {
     label 'view_and_display_cram'
