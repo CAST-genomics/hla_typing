@@ -1,0 +1,33 @@
+---
+title: "HLA Typing"
+author: "UCSD Health"
+date: "2023-04-25"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+This code will run the final hla typing integration for the specified analysis.  
+
+## Setup
+
+Code will be run automatically from the respective Nextflow, cromwell, or dsub
+runners.  Please confirm correct R version before proceeding.
+
+## Example
+
+Basic command for running this script is as follows.  Code is run from command
+line with specified parameters.
+
+Major internal execution is as follows: 
+
+```{r find_allele, echo=TRUE, eval=FALSE}
+find_allele(gene, hla, mean_cov=30)
+```
+
+Run the code specifying args 1 (result_file), 2 (alleles file), 3 (mean_cov),
+and 4 (read_len)

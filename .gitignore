@@ -145,7 +145,7 @@ examples/scripts/testrun.sh
 script/cromwell/gatk_example.wdl
 script/cromwell/gatk_basic.json
 womtool-85.jar
-
+script/R/.Rproj.user/
 
 
 

@@ -168,22 +168,22 @@ process cleanup {
 
 
 workflow {
-    view_cram(params.cram, params.crai, params.out)
+    // view_cram(params.cram, params.crai, params.out)
     // index_alleles = Channel.fromPath(params.alleles + "*")
-    // mybam = process_cram(params.cram, params.crai, params.bed, params.bam)
-    // sortbam =  params.bam + "_sort.bam"
-    // sort_bam = sort_bamfile(mybam, cores, sortbam) // "bam_sort.bam")
-    // fixmate_bam = params.bam + "_fixmate.bam"
-    // my_fixmate = fixmate(sort_bam, cores, fixmate_bam)
-    // (map0, maps, map1, map2) = fastq_map(my_fixmate, 
-    //     params.path+"mapped.0.fastq", params.path+"mappped.s.fastq", 
-    //     params.path + "mapped.1.fastq", params.path + "mapped.2.fastq")
-    // // // fastq_unmap1(input_bam, cores, unmapped_bam)
-    // // // fastq_unmap2(unmapped_bam, cores)
-    // allelesPath = file(params.alleles + ".{,amb,ann,bwt,pac,sa}")
-    // sam = bwa_alleles(allelesPath, map1, map2, params.path + "bwa.sam", cores)
-    // result = hlavbseq(allelesPath, sam, params.outtxt, params.hlavbseq)
-    // // cleanup(map0, maps, map1, map2)
+    mybam = process_cram(params.cram, params.crai, params.bed, params.bam)
+    sortbam =  params.bam + "_sort.bam"
+    sort_bam = sort_bamfile(mybam, cores, sortbam) // "bam_sort.bam")
+    fixmate_bam = params.bam + "_fixmate.bam"
+    my_fixmate = fixmate(sort_bam, cores, fixmate_bam)
+    (map0, maps, map1, map2) = fastq_map(my_fixmate, 
+        params.path+"mapped.0.fastq", params.path+"mappped.s.fastq", 
+        params.path + "mapped.1.fastq", params.path + "mapped.2.fastq")
+    // // fastq_unmap1(input_bam, cores, unmapped_bam)
+    // // fastq_unmap2(unmapped_bam, cores)
+    allelesPath = file(params.alleles + ".{,amb,ann,bwt,pac,sa}")
+    sam = bwa_alleles(allelesPath, map1, map2, params.path + "bwa.sam", cores)
+    result = hlavbseq(allelesPath, sam, params.outtxt, params.hlavbseq)
+    // cleanup(map0, maps, map1, map2)
 }
 
 workflow.onComplete {
