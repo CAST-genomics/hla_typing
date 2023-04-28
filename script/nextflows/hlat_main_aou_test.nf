@@ -25,6 +25,7 @@ process process_cram {
         path crai
         path bed
         path bam
+        val cores
         // var cores //= 7
     output:
         file bam // into bam// into bam2
@@ -170,7 +171,7 @@ process cleanup {
 workflow {
     // view_cram(params.cram, params.crai, params.out)
     // index_alleles = Channel.fromPath(params.alleles + "*")
-    mybam = process_cram(params.cram, params.crai, params.bed, params.bam)
+    mybam = process_cram(params.cram, params.crai, params.bed, params.bam, params.cores)
     sortbam =  params.bam + "_sort.bam"
     sort_bam = sort_bamfile(mybam, params.cores, sortbam) // "bam_sort.bam")
     fixmate_bam = params.bam + "_fixmate.bam"
