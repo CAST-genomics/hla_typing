@@ -173,17 +173,18 @@ workflow {
     // index_alleles = Channel.fromPath(params.alleles + "*")
     mybam = process_cram(params.cram, params.crai, params.bed, params.bam, params.cores)
     // sortbam =  params.bam + "_sort.bam"
-    // sort_bam = sort_bamfile(mybam, params.cores, sortbam) // "bam_sort.bam")
+    sort_bam = sort_bamfile(mybam, params.cores, params.sortbam) // "bam_sort.bam")
     // fixmate_bam = params.bam + "_fixmate.bam"
-    // my_fixmate = fixmate(sort_bam, params.cores, fixmate_bam)
-    // (map0, maps, map1, map2) = fastq_map(my_fixmate, 
-    //     params.path+"mapped.0.fastq", params.path+"mappped.s.fastq", 
-    //     params.path + "mapped.1.fastq", params.path + "mapped.2.fastq")
+    my_fixmate = fixmate(sort_bam, params.cores, params.fixmate_bam)
+    (map0, maps, map1, map2) = fastq_map(my_fixmate, 
+         params.map0, params.maps, params.map1, params.map2)
+         // params.path+"mapped.0.fastq", params.path+"mappped.s.fastq", 
+         // params.path + "mapped.1.fastq", params.path + "mapped.2.fastq")
     // // // fastq_unmap1(input_bam, cores, unmapped_bam)
     // // // fastq_unmap2(unmapped_bam, cores)
-    // allelesPath = file(params.alleles + ".{,amb,ann,bwt,pac,sa}")
-    // sam = bwa_alleles(allelesPath, map1, map2, params.path + "bwa.sam", params.cores)
-    // result = hlavbseq(allelesPath, sam, params.outtxt, params.hlavbseq)
+    allelesPath = file(params.alleles + ".{,amb,ann,bwt,pac,sa}")
+    sam = bwa_alleles(params.allelesPath, map1, map2, params.sam , params.cores) // params.path + "bwa.sam"
+    result = hlavbseq(allelesPath, sam, params.outtxt, params.hlavbseq)
     // cleanup(map0, maps, map1, map2)
 }
 
