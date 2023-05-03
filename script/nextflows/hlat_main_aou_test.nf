@@ -182,9 +182,9 @@ workflow {
          // params.path + "mapped.1.fastq", params.path + "mapped.2.fastq")
     // // // fastq_unmap1(input_bam, cores, unmapped_bam)
     // // // fastq_unmap2(unmapped_bam, cores)
-    allelesPath = file(params.alleles + ".{,amb,ann,bwt,pac,sa}")
+    // allelesPath = file(params.alleles + ".{,amb,ann,bwt,pac,sa}")
     sam = bwa_alleles(params.allelesPath, map1, map2, params.sam , params.cores) // params.path + "bwa.sam"
-    result = hlavbseq(allelesPath, sam, params.outtxt, params.hlavbseq)
+    result = hlavbseq(params.allelesPath, sam, params.outtxt, params.hlavbseq)
     // cleanup(map0, maps, map1, map2)
 }
 
