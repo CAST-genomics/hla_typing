@@ -32,7 +32,7 @@ process process_cram {
         // stdout
     script:
         """
-        samtools view -bh -L $bed -@ $cores -o $bam -X $cram $crai
+        samtools view -b -L $bed -@ $cores -o $bam -X $cram $crai
         """
         // samtools view -b -L $bed -@ 4 -X $cram $crai > $bam
         // samtools view -b -L $bed -@ 4 -o $bam -X $cram $crai
@@ -146,7 +146,7 @@ process hlavbseq {
     script:
         def allelesbase = alleles[0].baseName
         """
-        echo 'java -Xmx12G -jar $hlavbseq $allelesbase $sam $outtxt --alpha_zero 0.01 --is_paired' > $outtxt
+        java -Xmx12G -jar $hlavbseq $allelesbase $sam $outtxt --alpha_zero 0.01 --is_paired
         """
 }
 
