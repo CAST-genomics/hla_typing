@@ -75,6 +75,7 @@ process fastq_map {
         path maps //= "mapped.s.fastq"
         path map1 //= "mapped.1.fastq"
         path map2 //= "mapped.2.fastq"
+        val cores
     output:
         path map0 //into map0_ch //= "mapped.0.fastq"
         path maps //into maps_ch //="mapped.s.fastq"
@@ -177,7 +178,7 @@ workflow {
     // fixmate_bam = params.bam + "_fixmate.bam"
     my_fixmate = fixmate(sort_bam, params.cores, params.fixmate_bam)
     (map0, maps, map1, map2) = fastq_map(my_fixmate, 
-         params.map0, params.maps, params.map1, params.map2)
+         params.map0, params.maps, params.map1, params.map2, params.cores)
          // params.path+"mapped.0.fastq", params.path+"mappped.s.fastq", 
          // params.path + "mapped.1.fastq", params.path + "mapped.2.fastq")
     // // // fastq_unmap1(input_bam, cores, unmapped_bam)
