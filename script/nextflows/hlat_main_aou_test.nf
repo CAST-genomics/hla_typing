@@ -129,9 +129,9 @@ process bwa_alleles {
     output:
         path sam
     script:
-        def allelesbase = alleles[0].baseName
+        // def allelesbase = alleles[0].baseName
         """
-        bwa mem -t $cores -P -L 10000 -a $allelesbase $mapped1 $mapped2 > $sam
+        bwa mem -t $cores -P -L 10000 -a $alleles $mapped1 $mapped2 > $sam
         """
 }
 
@@ -145,9 +145,9 @@ process hlavbseq {
     output:
         path outtxt
     script:
-        def allelesbase = alleles[0].baseName
+        // def allelesbase = alleles[0].baseName
         """
-        java -Xmx12G -jar $hlavbseq $allelesbase $sam $outtxt --alpha_zero 0.01 --is_paired
+        java -Xmx12G -jar $hlavbseq $alleles $sam $outtxt --alpha_zero 0.01 --is_paired
         """
 }
 
