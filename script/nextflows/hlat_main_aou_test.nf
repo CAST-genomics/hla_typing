@@ -121,6 +121,7 @@ process fastq_map {
 process bwa_alleles {
     label "bwa_alleles"
     input:
+        path bwa
         path alleles
         path mapped1
         path mapped2
@@ -131,7 +132,7 @@ process bwa_alleles {
     script:
         // def allelesbase = alleles[0].baseName
         """
-        bwa mem -t $cores -P -L 10000 -a $alleles $mapped1 $mapped2 > $sam
+        $bwa mem -t $cores -P -L 10000 -a $alleles $mapped1 $mapped2 > $sam
         """
 }
 
@@ -184,7 +185,7 @@ workflow {
     // // // fastq_unmap1(input_bam, cores, unmapped_bam)
     // // // fastq_unmap2(unmapped_bam, cores)
     // allelesPath = file(params.alleles + ".{,amb,ann,bwt,pac,sa}")
-    sam = bwa_alleles(params.allelesPath, map1, map2, params.sam , params.cores) // params.path + "bwa.sam"
+    sam = bwa_alleles(params.bwa, params.allelesPath, map1, map2, params.sam , params.cores) // params.path + "bwa.sam"
     result = hlavbseq(params.allelesPath, sam, params.outtxt, params.hlavbseq)
     // cleanup(map0, maps, map1, map2)
 }
