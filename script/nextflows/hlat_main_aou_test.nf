@@ -169,14 +169,16 @@ process cleanup {
 }
 
 process test_bwa {
+    // container "biocontainers/bwa:v0.7.17_cv1"
+    container "gcr.io/ucsd-medicine-cast/hlatbwa:latest"
     label "test_bwa"
     input:
-        path bwa
+        val bwa
     output:
         stdout
     script:
     """
-    $bwa mem
+    bwa mem 
     """
 }
 
