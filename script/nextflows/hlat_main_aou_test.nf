@@ -119,9 +119,10 @@ process fastq_map {
 
 
 process bwa_alleles {
+    container "gcr.io/ucsd-medicine-cast/hlatbwa:latest"
     label "bwa_alleles"
     input:
-        path bwa
+        val bwa
         path alleles
         path mapped1
         path mapped2
@@ -132,7 +133,7 @@ process bwa_alleles {
     script:
         // def allelesbase = alleles[0].baseName
         """
-        $bwa mem -t $cores -P -L 10000 -a $alleles $mapped1 $mapped2 > $sam
+        bwa mem -t $cores -P -L 10000 -a $alleles $mapped1 $mapped2 > $sam
         """
 }
 
@@ -184,22 +185,22 @@ process test_bwa {
 
 
 workflow {
-    test_bwa(params.bwa)
-    // // view_cram(params.cram, params.crai, params.out)
-    // // index_alleles = Channel.fromPath(params.alleles + "*")
-    // mybam = process_cram(params.cram, params.crai, params.bed, params.bam, params.cores)
-    // // sortbam =  params.bam + "_sort.bam"
-    // sort_bam = sort_bamfile(mybam, params.cores, params.sortbam) // "bam_sort.bam")
-    // // fixmate_bam = params.bam + "_fixmate.bam"
-    // my_fixmate = fixmate(sort_bam, params.cores, params.fixmate_bam)
-    // (map0, maps, map1, map2) = fastq_map(my_fixmate, 
-    //      params.map0, params.maps, params.map1, params.map2, params.cores)
-    //      // params.path+"mapped.0.fastq", params.path+"mappped.s.fastq", 
-    //      // params.path + "mapped.1.fastq", params.path + "mapped.2.fastq")
-    // // // // fastq_unmap1(input_bam, cores, unmapped_bam)
-    // // // // fastq_unmap2(unmapped_bam, cores)
-    // // allelesPath = file(params.alleles + ".{,amb,ann,bwt,pac,sa}")
-    // sam = bwa_alleles(params.bwa, params.allelesPath, map1, map2, params.sam , params.cores) // params.path + "bwa.sam"
+    // test_bwa(params.bwa)
+    // view_cram(params.cram, params.crai, params.out)
+    // index_alleles = Channel.fromPath(params.alleles + "*")
+    mybam = process_cram(params.cram, params.crai, params.bed, params.bam, params.cores)
+    // sortbam =  params.bam + "_sort.bam"
+    sort_bam = sort_bamfile(mybam, params.cores, params.sortbam) // "bam_sort.bam")
+    // fixmate_bam = params.bam + "_fixmate.bam"
+    my_fixmate = fixmate(sort_bam, params.cores, params.fixmate_bam)
+    (map0, maps, map1, map2) = fastq_map(my_fixmate, 
+         params.map0, params.maps, params.map1, params.map2, params.cores)
+         // params.path+"mapped.0.fastq", params.path+"mappped.s.fastq", 
+         // params.path + "mapped.1.fastq", params.path + "mapped.2.fastq")
+    // // // fastq_unmap1(input_bam, cores, unmapped_bam)
+    // // // fastq_unmap2(unmapped_bam, cores)
+    // allelesPath = file(params.alleles + ".{,amb,ann,bwt,pac,sa}")
+    sam = bwa_alleles(params.bwa, params.allelesPath, map1, map2, params.sam , params.cores) // params.path + "bwa.sam"
     // result = hlavbseq(params.allelesPath, sam, params.outtxt, params.hlavbseq)
     // // cleanup(map0, maps, map1, map2)
 }
