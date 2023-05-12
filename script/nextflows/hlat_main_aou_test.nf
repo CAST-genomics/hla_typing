@@ -171,7 +171,7 @@ process cleanup {
 
 process test_bwa {
     // container "biocontainers/bwa:v0.7.17_cv1"
-    container "gcr.io/ucsd-medicine-cast/hlatbwa:latest"
+    container "gcr.io/ucsd-medicine-cast/hlabwa:latest"
     label "test_bwa"
     input:
         val bwa
