@@ -119,7 +119,9 @@ process fastq_map {
 
 
 process bwa_alleles {
-    container "gcr.io/ucsd-medicine-cast/hlatbwa:latest"
+    container "gcr.io/ucsd-medicine-cast/hla_gatk:latest"
+    cpus 16
+    memory "64 GB"
     label "bwa_alleles"
     input:
         val bwa
@@ -201,7 +203,7 @@ workflow {
     // // // fastq_unmap2(unmapped_bam, cores)
     // allelesPath = file(params.alleles + ".{,amb,ann,bwt,pac,sa}")
     sam = bwa_alleles(params.bwa, params.allelesPath, map1, map2, params.sam , params.cores) // params.path + "bwa.sam"
-    // result = hlavbseq(params.allelesPath, sam, params.outtxt, params.hlavbseq)
+    result = hlavbseq(params.allelesPath, sam, params.outtxt, params.hlavbseq)
     // // cleanup(map0, maps, map1, map2)
 }
 
