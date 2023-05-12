@@ -119,7 +119,7 @@ process fastq_map {
 
 
 process bwa_alleles {
-    container "gcr.io/ucsd-medicine-cast/hla_gatk:latest"
+    // container "gcr.io/ucsd-medicine-cast/hla_gatk:latest"
     cpus 16
     memory "64 GB"
     label "bwa_alleles"
@@ -135,12 +135,14 @@ process bwa_alleles {
     script:
         // def allelesbase = alleles[0].baseName
         """
-        bwa mem -t $cores -P -L 10000 -a $alleles $mapped1 $mapped2 > $sam
+        /gatk/bwa/bwa mem -t $cores -P -L 10000 -a $alleles $mapped1 $mapped2 > $sam
         """
 }
 
 process hlavbseq {
     label "hlavbseq"
+    cpus 4
+    memory "32 GB"
     input:
         path alleles
         path sam
@@ -181,7 +183,7 @@ process test_bwa {
         stdout
     script:
     """
-    bwa mem 
+    /gatk/gatk/bwa mem 
     """
 }
 
