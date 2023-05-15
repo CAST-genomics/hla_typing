@@ -134,8 +134,9 @@ process bwa_alleles {
         path sam
     script:
         // def allelesbase = alleles[0].baseName
+        // def allelesbase = alleles[0].name + ".{amb,ann,bwt,pac,sa}"
         """
-        /gatk/bwa/bwa mem -t $cores -P -L 10000 -a $alleles $mapped1 $mapped2 > $sam
+        echo /gatk/bwa/bwa mem -t $cores -P -L 10000 -a $alleles $mapped1 $mapped2 > $sam
         """
 }
 
