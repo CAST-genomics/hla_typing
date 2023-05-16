@@ -132,11 +132,12 @@ process bwa_alleles {
         val cores
     output:
         path sam
+        path allelesbase
     script:
         // def allelesbase = alleles[0].baseName
-        // def allelesbase = alleles[0].name + ".{amb,ann,bwt,pac,sa}"
+        def allelesbase = alleles[0].name  //+ ".{amb,ann,bwt,pac,sa}"
         """
-        echo /gatk/bwa/bwa mem -t $cores -P -L 10000 -a $alleles $mapped1 $mapped2 > $sam
+        echo /gatk/bwa/bwa mem -t $cores -P -L 10000 -a $allelesbase $mapped1 $mapped2 > $sam
         """
 }
 
@@ -152,7 +153,7 @@ process hlavbseq {
     output:
         path outtxt
     script:
-        // def allelesbase = alleles[0].baseName
+        def allelesbase = alleles[0].name
         """
         java -Xmx12G -jar $hlavbseq $alleles $sam $outtxt --alpha_zero 0.01 --is_paired
         """
