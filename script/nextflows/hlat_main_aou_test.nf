@@ -132,7 +132,7 @@ process bwa_alleles {
         val cores
     output:
         path sam
-        path allelesbase
+        //path allelesbase
     script:
         // def allelesbase = alleles[0].baseName
         def allelesbase = alleles[0].name  //+ ".{amb,ann,bwt,pac,sa}"
@@ -155,7 +155,7 @@ process hlavbseq {
     script:
         def allelesbase = alleles[0].name
         """
-        java -Xmx12G -jar $hlavbseq $alleles $sam $outtxt --alpha_zero 0.01 --is_paired
+        java -Xmx12G -jar $hlavbseq $allelesbase $sam $outtxt --alpha_zero 0.01 --is_paired
         """
 }
 
