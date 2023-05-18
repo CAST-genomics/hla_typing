@@ -130,14 +130,20 @@ process bwa_alleles {
         path mapped2
         path sam
         val cores
+        path alleles_amb
+        path alleles_ann
+        path alleles_bwt
+        path alleles_pac
+        path alleles_sa
+        path alleles_amb
     output:
         path sam
         //path allelesbase
     script:
         // def allelesbase = alleles[0].baseName
-        def allelesbase = alleles[0].name  //+ ".{amb,ann,bwt,pac,sa}"
+        //def allelesbase = alleles[0].name  //+ ".{amb,ann,bwt,pac,sa}"
         """
-        echo /gatk/bwa/bwa mem -t $cores -P -L 10000 -a $allelesbase $mapped1 $mapped2 > $sam
+        /gatk/bwa/bwa mem -t $cores -P -L 10000 -a $alleles $mapped1 $mapped2 > $sam
         """
 }
 
@@ -153,9 +159,9 @@ process hlavbseq {
     output:
         path outtxt
     script:
-        def allelesbase = alleles[0].name
+        //def allelesbase = alleles[0].name
         """
-        java -Xmx12G -jar $hlavbseq $allelesbase $sam $outtxt --alpha_zero 0.01 --is_paired
+        java -Xmx12G -jar $hlavbseq $alleles $sam $outtxt --alpha_zero 0.01 --is_paired
         """
 }
 
@@ -174,6 +180,26 @@ process cleanup {
     rm $map0; rm $map1; rm $map2; rm $maps;
     """
 }
+
+process index_alleles {
+    label "index_alleles"
+    input:
+        path allelesPath
+    output:
+        path alleles = "alleles.gen.fasta"
+        path alleles_amb = "alleles.gen.fasta.amb"
+        path alleles_ann = "alleles.gen.fasta.ann"
+        path alleles_bwt = "alleles.gen.fasta.bwt"
+        path alleles_pac = "alleles.gen.fasta.pac"
+        path alleles_sa = "alleles.gen.fasta.sa"
+        path alleles_amb = "alleles.gen.fasta.amb"
+    script:
+        """
+        /gatk/bwa/bwa index $allelesPath
+        """
+}
+(allelesf, alleles_amb, alleles_ann, alleles_bwt, 
+alleles_pac, alleles_sa, alleles_amb) = 
 
 process test_bwa {
     // container "biocontainers/bwa:v0.7.17_cv1"
@@ -194,6 +220,9 @@ workflow {
     // test_bwa(params.bwa)
     // view_cram(params.cram, params.crai, params.out)
     // index_alleles = Channel.fromPath(params.alleles + "*")
+    (allelesf, alleles_amb, alleles_ann, alleles_bwt, alleles_pac, 
+    alleles_sa, alleles_amb) = index_alleles(params.allelesPath)
+    
     mybam = process_cram(params.cram, params.crai, params.bed, params.bam, params.cores)
     // sortbam =  params.bam + "_sort.bam"
     sort_bam = sort_bamfile(mybam, params.cores, params.sortbam) // "bam_sort.bam")
@@ -206,8 +235,10 @@ workflow {
     // // // fastq_unmap1(input_bam, cores, unmapped_bam)
     // // // fastq_unmap2(unmapped_bam, cores)
     // allelesPath = file(params.alleles + ".{,amb,ann,bwt,pac,sa}")
-    sam = bwa_alleles(params.bwa, params.allelesPath, map1, map2, params.sam , params.cores) // params.path + "bwa.sam"
-    result = hlavbseq(params.allelesPath, sam, params.outtxt, params.hlavbseq)
+    sam = bwa_alleles(params.bwa, allelesf, map1, map2, 
+        params.sam , params.cores, alleles_amb, alleles_ann, alleles_bwt, 
+        alleles_pac, alleles_sa, alleles_amb) // params.path + "bwa.sam"
+    result = hlavbseq(allelesf, sam, params.outtxt, params.hlavbseq)
     // // cleanup(map0, maps, map1, map2)
 }
 
