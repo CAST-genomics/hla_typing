@@ -135,7 +135,6 @@ process bwa_alleles {
         path alleles_bwt
         path alleles_pac
         path alleles_sa
-        path alleles_amb
     output:
         path sam
         //path allelesbase
@@ -192,7 +191,6 @@ process index_alleles {
         path "alleles.gen.fasta.bwt"
         path "alleles.gen.fasta.pac"
         path "alleles.gen.fasta.sa"
-        path "alleles.gen.fasta.amb"
     script:
         """
         /gatk/bwa/bwa index $allelesPath
@@ -221,7 +219,7 @@ workflow {
     // view_cram(params.cram, params.crai, params.out)
     // index_alleles = Channel.fromPath(params.alleles + "*")
     (allelesf, alleles_amb, alleles_ann, alleles_bwt, alleles_pac, 
-    alleles_sa, alleles_amb) = index_alleles(params.allelesPath)
+    alleles_sa) = index_alleles(params.allelesPath)
     
     mybam = process_cram(params.cram, params.crai, params.bed, params.bam, params.cores)
     // sortbam =  params.bam + "_sort.bam"
@@ -237,7 +235,7 @@ workflow {
     // allelesPath = file(params.alleles + ".{,amb,ann,bwt,pac,sa}")
     sam = bwa_alleles(params.bwa, allelesf, map1, map2, 
         params.sam , params.cores, alleles_amb, alleles_ann, alleles_bwt, 
-        alleles_pac, alleles_sa, alleles_amb) // params.path + "bwa.sam"
+        alleles_pac, alleles_sa) // params.path + "bwa.sam"
     result = hlavbseq(allelesf, sam, params.outtxt, params.hlavbseq)
     // // cleanup(map0, maps, map1, map2)
 }
