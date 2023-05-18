@@ -196,8 +196,6 @@ process index_alleles {
         /gatk/bwa/bwa index $allelesPath
         """
 }
-(allelesf, alleles_amb, alleles_ann, alleles_bwt, 
-alleles_pac, alleles_sa, alleles_amb) = 
 
 process test_bwa {
     // container "biocontainers/bwa:v0.7.17_cv1"
