@@ -149,18 +149,18 @@ process bwa_alleles {
 process hlavbseq {
     label "hlavbseq"
     cpus 4
-    memory "32 GB"
+    memory "16 GB"
     input:
         path alleles
         path sam
         path outtxt
-        path hlavbseq
+        //path hlavbseq
     output:
         path outtxt
     script:
         //def allelesbase = alleles[0].name
         """
-        java -Xmx12G -jar $hlavbseq $alleles $sam $outtxt --alpha_zero 0.01 --is_paired
+        java -Xmx12G -jar /gatk/HLAVBSeq.jar $alleles $sam $outtxt --alpha_zero 0.01 --is_paired
         """
 }
 
@@ -207,7 +207,8 @@ process test_bwa {
         stdout
     script:
     """
-    /gatk/gatk/bwa mem 
+    /gatk/gatk/bwa mem;
+    java -jar /gatk/HLAVBSeq.jar
     """
 }
 
@@ -233,7 +234,7 @@ workflow {
     sam = bwa_alleles(params.bwa, allelesf, map1, map2, 
         params.sam , params.cores, alleles_amb, alleles_ann, alleles_bwt, 
         alleles_pac, alleles_sa) // params.path + "bwa.sam"
-    result = hlavbseq(allelesf, sam, params.outtxt, params.hlavbseq)
+    result = hlavbseq(allelesf, sam, params.outtxt) //, params.hlavbseq)
     // // cleanup(map0, maps, map1, map2)
 }
 
