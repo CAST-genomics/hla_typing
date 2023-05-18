@@ -186,13 +186,13 @@ process index_alleles {
     input:
         path allelesPath
     output:
-        path alleles = "alleles.gen.fasta"
-        path alleles_amb = "alleles.gen.fasta.amb"
-        path alleles_ann = "alleles.gen.fasta.ann"
-        path alleles_bwt = "alleles.gen.fasta.bwt"
-        path alleles_pac = "alleles.gen.fasta.pac"
-        path alleles_sa = "alleles.gen.fasta.sa"
-        path alleles_amb = "alleles.gen.fasta.amb"
+        path "alleles.gen.fasta"
+        path "alleles.gen.fasta.amb"
+        path "alleles.gen.fasta.ann"
+        path "alleles.gen.fasta.bwt"
+        path "alleles.gen.fasta.pac"
+        path "alleles.gen.fasta.sa"
+        path "alleles.gen.fasta.amb"
     script:
         """
         /gatk/bwa/bwa index $allelesPath
