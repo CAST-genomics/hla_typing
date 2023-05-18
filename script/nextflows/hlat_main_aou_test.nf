@@ -218,8 +218,7 @@ workflow {
     // test_bwa(params.bwa)
     // view_cram(params.cram, params.crai, params.out)
     // index_alleles = Channel.fromPath(params.alleles + "*")
-    (allelesf, alleles_amb, alleles_ann, alleles_bwt, alleles_pac, 
-    alleles_sa) = index_alleles(params.allelesPath)
+    (allelesf, alleles_amb, alleles_ann, alleles_bwt, alleles_pac, alleles_sa) = index_alleles(params.allelesPath)
     
     mybam = process_cram(params.cram, params.crai, params.bed, params.bam, params.cores)
     // sortbam =  params.bam + "_sort.bam"
