@@ -236,7 +236,7 @@ workflow {
     // index_alleles = Channel.fromPath(params.alleles + "*")
     (allelesf, alleles_amb, alleles_ann, alleles_bwt, alleles_pac, alleles_sa) = index_alleles(params.allelesPath)
     
-    mybam = process_cram(params.cram, params.crai, params.bed, params.bam, params.cores)
+    mybam = process_cram(params.cram, params.crai, params.bed, params.bam, 14) //params.cores
     // sortbam =  params.bam + "_sort.bam"
     sort_bam = sort_bamfile(mybam, params.cores, params.sortbam) // "bam_sort.bam")
     // fixmate_bam = params.bam + "_fixmate.bam"
