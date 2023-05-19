@@ -20,6 +20,8 @@ process view_cram {
 
 process process_cram {
     //container "us.gcr.io/broad-gatk/gatk:4.2.5.0"
+    cpus 16
+    memory "64 GB"
     container "gcr.io/ucsd-medicine-cast/hlatyping"
     label "Process_cram_file"
     input:
