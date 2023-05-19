@@ -19,6 +19,8 @@ process view_cram {
 }
 
 process process_cram {
+    //container "us.gcr.io/broad-gatk/gatk:4.2.5.0"
+    container "gcr.io/ucsd-medicine-cast/hlatyping"
     label "Process_cram_file"
     input:
         path cram
@@ -209,6 +211,19 @@ process test_bwa {
     """
     # /gatk/gatk/bwa mem;
     # java -jar /gatk/HLAVBSeq.jar
+    """
+}
+
+process test_write {
+    label "test_write"
+    input:
+        val location
+        path 
+    output:
+        path location
+    script:
+    """
+    gsutil -m cp 
     """
 }
 
